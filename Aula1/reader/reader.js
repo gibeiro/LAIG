@@ -100,7 +100,8 @@ MySceneGraph.prototype.parseComponents= function(rootElement) {
 				continue;
 			}			
 			if(id_material = "inherit"){
-				component.materials = components[component.parent].materials;
+				//if(components[component.parent].materials != null)
+				//component.materials = components[component.parent].materials;
 				break;
 			}
 			var material;
@@ -157,8 +158,11 @@ MySceneGraph.prototype.parseComponents= function(rootElement) {
 			var child_ = children_[i];
 			var id_child = this.reader.getString(child_,"id");
 			var tag_name = child_.nodeName;
-			if(child_.nodeName = "componentref")
-				components[id_child].parent = id;
+			if(child_.nodeName = "componentref"){
+				if(components[id_child] == null)
+					components[id_child] = {};			
+					components[id_child].parent = id;
+			}
 			else
 				primitives[id_child].parent = id;
 		
