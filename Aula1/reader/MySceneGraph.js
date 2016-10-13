@@ -423,16 +423,88 @@ MySceneGraph.prototype.parseComponent = function(node){
 	console.log("Component");
 	var component = {};
 	component.id = this.reader.getString(node,"id");
+	var tree_node = new Node(component.id);
 	component.transformation = this.parseComponentTransformation(node.children[0]);
+	component.materials = this.parseComponentMaterials(node.children[1]);
+	component.texture = this.parseComponentTextures(node.children[2]);
+	node.children = this.parseComponentChildren(node.children[3]);
+	this.tree.addNode(tree_node);
+	this.components[component.id] = component;
 	console.log("");
+}
+
+MySceneGraph.prototype.parseComponentChildren = function(node){
+
+	var children = [];
+
+	for(var i = 0; i < node.children.length; i++){
+		var id = this.reader.getString(node.children[i],"id");
+			if(node.children[i].tagName == "primitiveref"){
+				if(this.primitives[id] != null){
+					var component = {};
+					component.transformation = null;
+					component.materials = ["inherit"];
+					component.texture = "inherit";
+					component.id = "component" + this.components.length;
+					var tree_node = new Node(component.id);
+					tree_node.children = [];
+					this.components[component.id] = component;
+					this.tree.addNode(tree_node);
+					children.push(component.id);
+				}
+			}
+			else
+				children.push(id);
+			}
+}
+
+MySceneGraph.prototype.parseComponentTexture =function(node){
+
+	var id = this.reader.getString(node);
+
+	if(id == "none"){
+		var texture = {};
+		texture.id = "texture" + this.textures.length;
+		texture.file = this.reader.getString(node,"file");
+		texture.length_s = this.reader.getFloat(node,"length_s");
+		texture.length_t = this.reader.getFloat(node,"length_t");
+		textures[texture.id] = texture;
+		return texture.id;
+	}
+
+	return id;
+
+}
+
+MySceneGraph.prototype.parseComponentMaterials = function(node){
+	var materials = [];
+	for(var i = 0; i < node.children.length; i++)
+		materials.push(this.reader.getString(node.chidren[i],"id"));
+
+	return materials;
 }
 
 MySceneGraph.prototype.parseComponentTransformation = function(node){
 
-	if(node.children.length > 1){}
+	if(node.children.length > 1){
+		var transformation = {};
+		transformation.matrix = [];
+		transformation.id = "transformation" + this.transformations.length;
 		for(var i = 0; i < node.children.length; i++)
-
-
+			transformation.matrixes.push(this.parseMatrix(node.children[i]));
+		this.transformations[transformation.id] = transformation;
+		return transformation.id;
+	}
+	else if(node.children[0].tagName != "transformationref"){
+		var transformation = {};
+		transformation.matrix = [];
+		transformation.id = "transformation" + this.transformations.length;
+		transformation.matrixes.push(this.parseMatrix(node.children[0]));
+		this.transformations[transformation.id] = transformation;
+		return transformation.id;
+	}
+	else
+		return this.reader.getString(node.children[0],"id");
 }
 
 
@@ -481,7 +553,7 @@ MySceneGraph.prototype.onXMLReady=function()
 	this.parseMaterials(rootElement.children[5]);
 	this.parseTransformations(rootElement.children[6]);
 	this.parsePrimitives(rootElement.children[7]);
-	//this.parseComponents(rootElement.children[8]);
+	this.parseComponents(rootElement.children[8]);
 
 
 	/*
