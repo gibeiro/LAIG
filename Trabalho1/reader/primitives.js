@@ -2,6 +2,44 @@ function PrimitiveBuilder() {
     // Empty block
 }
 
+PrimitiveBuilder.buildTorus = function(scene, inner, outter, slices, loops){
+  function Torus(scene, inner, outter, slices, loops) {
+      this.scene = scene;
+      this.inner = inner;
+      this.outter = outter;
+      this.slices = slices;
+      this.loops = stacks;
+      CGFobject.call(this, scene);
+      this.initBuffers();
+  };
+
+  Torus.prototype = Object.create(CGFobject.prototype);
+  Torus.prototype.constructor = Torus;
+
+  Torus.prototype.initBuffers = function () {
+
+      // Only draws triangles
+      this.primitiveType = this.scene.gl.TRIANGLES;
+
+      this.vertices = [];
+      this.indices = [];
+      this.normals = [];
+      this.texCoords = [];
+
+    for(var i = 0; i < slices ; i++){
+
+
+
+    }
+
+      // Takes the data in vertices, indices and normals and puts in buffers to be used by WebGl.
+      this.initGLBuffers();
+  };
+
+  var Torus = new Torus(scene, inner, outter, slices, loops);
+  return torus;
+}
+
 // Builds a rectangle with the diagonal vertices
 PrimitiveBuilder.buildRect = function (scene, x1, y1, x2, y2) {
     function Rect(scene, x1, y1, x2, y2) {
@@ -43,7 +81,7 @@ PrimitiveBuilder.buildRect = function (scene, x1, y1, x2, y2) {
             0, 0, 1,
             0, 0, 1
         ];
-        
+
         this.texCoords = [
             1, 0,
             0, 0,

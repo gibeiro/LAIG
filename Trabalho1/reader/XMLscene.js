@@ -1,3 +1,4 @@
+var deg_rad = Math.PI / 180.0;
 
 function XMLscene() {
     CGFscene.call(this);
@@ -38,21 +39,94 @@ XMLscene.prototype.setDefaultAppearance = function () {
     this.setAmbient(0.2, 0.4, 0.8, 1.0);
     this.setDiffuse(0.2, 0.4, 0.8, 1.0);
     this.setSpecular(0.2, 0.4, 0.8, 1.0);
-    this.setShininess(10.0);	
+    this.setShininess(10.0);
 };
 
-// Handler called when the graph is finally loaded. 
+// Handler called when the graph is finally loaded.
 // As loading is asynchronous, this may be called already after the application has started the run loop
-XMLscene.prototype.onGraphLoaded = function () 
+XMLscene.prototype.onGraphLoaded = function ()
 {
-	this.gl.clearColor(this.graph.background[0],this.graph.background[1],this.graph.background[2],this.graph.background[3]);
+  this.setGlobalAmbientLight(this.graph.illumination.ambient.r,this.graph.illumination.ambient.g,this.graph.illumination.ambient.b,this.graph.illumination.ambient.a);
+
+	this.gl.clearColor(
+    this.graph.illumination.background.r,
+    this.graph.illumination.background.g,
+    this.graph.illumination.background.b,
+    this.graph.illumination.background.a
+  );
 	this.lights[0].setVisible(true);
     this.lights[0].enable();
+
+    this.axis = new CGFaxis(this,this.scene.axis_length);
+
+    console.log("Loading lights ...");
+    for(var i = 0: i < this.graph.lights.length; i++)
+        this.initLight(this.graph.lights[i]);
+
 };
+
+XMLscene.prototype.initLight = function (light) {
+
+  var tmp = new CGFlight(this,light.id);
+
+  tmp.setAmbient(
+    light.ambient.r,
+    light.ambient.g,
+    light.ambient.b,
+    light.ambient.a
+  );
+
+  tmp.setDiffuse(
+      light.diffuse.r,
+      light.diffuse.g,
+      light.diffuse.b,
+      light.diffuse.a
+  );
+
+  tmp.setSpecular(
+      light.specular.r,
+      light.specular.g,
+      light.specular.b,
+      light.specular.a
+  );
+
+  if(light.type == "omni"){
+    tmp.setPosition(
+      light.location.x,
+      light.location.y,
+      light.location.z,
+      light.location.w
+    );
+  }
+  if(light.type == "spot"){
+    tmp.setPosition(
+      light.location.x,
+      light.location.y,
+      light.location.z,
+      1
+    );
+    tmp.setSpotDirection(
+      light.target.x - light.location.x,
+      light.target.y - light.location.y,
+      light.target.z - light.location.z
+    );
+    tmp.setSpotExponent(
+      light.exponent
+    );
+    tmp.setSpotCutOff(
+      light.angle
+    );
+  }
+
+  light.enabled ? tmp.enable() : tmp.disable();
+
+  this.lights.push(tmp);
+
+}
 
 XMLscene.prototype.display = function () {
 	// ---- BEGIN Background, camera and axis setup
-	
+
 	// Clear image and depth buffer everytime we update the scene
     this.gl.viewport(0, 0, this.gl.canvas.width, this.gl.canvas.height);
     this.gl.clear(this.gl.COLOR_BUFFER_BIT | this.gl.DEPTH_BUFFER_BIT);
@@ -68,7 +142,7 @@ XMLscene.prototype.display = function () {
 	this.axis.display();
 
 	this.setDefaultAppearance();
-	
+
 	// ---- END Background, camera and axis setup
 
 	// it is important that things depending on the proper loading of the graph
@@ -77,6 +151,16 @@ XMLscene.prototype.display = function () {
 	if (this.graph.loadedOk)
 	{
 		this.lights[0].update();
-	};	
+    this.displayGraph();
+	};
 };
 
+XMLscene.prototype.displayGraph = function(root){
+
+  while(var node = this.tree.DFS() != null){
+    
+  }
+
+  this.tree.resetTraversal();
+
+}
