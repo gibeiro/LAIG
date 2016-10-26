@@ -509,10 +509,10 @@ graph.prototype.parseNode = function (componentsList, component, parentNode) {
 								materialRef.ambient.a
 							);
 							material.setDiffuse(
-								materialRef.diffuse.r,
-								materialRef.diffuse.g,
-								materialRef.diffuse.b,
-								materialRef.diffuse.a
+								materialRef.diffuse.r
+								 materialRef.diffuse.g,
+								 materialRef.diffuse.b,
+								 materialRef.diffuse.a
 							 );
 							material.setSpecular(
 								materialRef.specular.r,
