@@ -129,6 +129,10 @@ graph.prototype.parseData = function (rootElement) {
 	err = this.parsePrimitives(rootElement);
 	if (err != null) return err;
 
+	this.animations = [];
+	err = this.parseAnimations(rootElement);
+	if (err != null) return err;
+
 	console.info("If you have more than 1 texture per component, all but the first one will be ignored");
 
 	this.rootNode;
@@ -136,6 +140,35 @@ graph.prototype.parseData = function (rootElement) {
 	if (err != null) return err;
 };
 
+graph.prototype.parseAnimations = function(rootElement){
+	var animations = rootElement.getElementsByTagName('animations')[0];
+	for(var i = 0; i < animations.children.length; i++){
+			var animation = animations.children[i];
+
+			var id = this.reader.getString(animation,'id');
+			var span = this.reader.getFloat(animation,'span');
+			var type = this.reader.getItem(animation,'type',['linear','circular']);
+
+		if(type == 'linear'){
+			for(var j = 0; j < animation.children.length; j++){
+				var controlpoint = animation.children[j];
+				var xx = this.reader.getFloat(controlpoint,'xx');
+				var yy = this.reader.getFloat(controlpoint,'yy');
+				var zz = this.reader.getFloat(controlpoint,'zz');
+			}
+		}
+		else if(type == 'circular'){
+			var center = this.reader.getXYZ(animation, 'center');
+			var radius = this.reader.getFloat(animation, 'radius');
+			var startang = this.reader.getFloat(animation, 'startang');
+			var rotang = this.reader.getFloat(animation, 'rotang');
+		}
+		else
+			this.onXMError('invalid animation type');
+		}
+
+
+};
 
 graph.prototype.parseScene = function (rootElement) {
 	var scene = rootElement.getElementsByTagName('scene')[0];

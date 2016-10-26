@@ -136,6 +136,15 @@ graph.prototype.parseData = function (rootElement) {
 	if (err != null) return err;
 };
 
+graph.prototype.changeNodesMaterialIndex = function (node) {
+	if (node.indexActiveMaterial >= node.materials.length - 1)
+	node.indexActiveMaterial = 0;
+	else
+	node.indexActiveMaterial++;
+
+	for (var i = 0; i < node.children.length; i++)
+	this.changeNodesMaterialIndex(node.children[i]);
+}
 
 graph.prototype.parseScene = function (rootElement) {
 	var scene = rootElement.getElementsByTagName('scene')[0];
@@ -500,10 +509,10 @@ graph.prototype.parseNode = function (componentsList, component, parentNode) {
 								materialRef.ambient.a
 							);
 							material.setDiffuse(
-								materialRef.diffuse.r,
-								materialRef.diffuse.g,
-								materialRef.diffuse.b,
-								materialRef.diffuse.a
+								materialRef.diffuse.r
+								 materialRef.diffuse.g,
+								 materialRef.diffuse.b,
+								 materialRef.diffuse.a
 							 );
 							material.setSpecular(
 								materialRef.specular.r,
