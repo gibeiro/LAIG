@@ -136,16 +136,6 @@ graph.prototype.parseData = function (rootElement) {
 	if (err != null) return err;
 };
 
-graph.prototype.changeNodesMaterialIndex = function (node) {
-	if (node.indexActiveMaterial >= node.materials.length - 1)
-	node.indexActiveMaterial = 0;
-	else
-	node.indexActiveMaterial++;
-
-	for (var i = 0; i < node.children.length; i++)
-	this.changeNodesMaterialIndex(node.children[i]);
-}
-
 graph.prototype.parseScene = function (rootElement) {
 	var scene = rootElement.getElementsByTagName('scene')[0];
 	var axisLength = this.reader.getFloat(scene, 'axis_length', true);
