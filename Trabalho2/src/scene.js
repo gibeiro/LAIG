@@ -48,6 +48,7 @@ scene.prototype.setDefaultAppearance = function () {
 // Handler called when the graph is finally loaded.
 // As loading is asynchronous, this may be called already after the application has started the run loop
 scene.prototype.onGraphLoaded = function () {
+	/*
 	this.setGlobalAmbientLight(
 		this.graph.ambientLight[0],
 		this.graph.ambientLight[1],
@@ -59,6 +60,19 @@ scene.prototype.onGraphLoaded = function () {
 		this.graph.background[1],
 		this.graph.background[2],
 		this.graph.background[3]
+	);
+	*/
+	this.setGlobalAmbientLight(
+	0,
+		0,
+		0,
+		0
+	);
+	this.gl.clearColor(
+	0,
+	0,
+	0,
+	0
 	);
 	this.axis = this.graph.axis;
 
