@@ -31,10 +31,7 @@ function LinearAnimation(scene, span, control_points){
   );
 
   for(var i = 1; i < this.distances.length;i++)
-    this.distances[i] += this.distances[i-1];
-
-  console.log(this.distances);
-  console.log(this.total_distance);
+  this.distances[i] += this.distances[i-1];
 }
 
 LinearAnimation.prototype.constructor = LinearAnimation;
@@ -48,115 +45,57 @@ LinearAnimation.prototype.update = function(time){
 
   for(var i = 0; i < this.distances.length; i++){
 
-      if(this.distances[i] > distance){
-        distance_f = this.distances[i];
-        if(i > 0)
-          distance_i = this.distances[i-1];
-        else
-          distance_i = 0;
+    if(this.distances[i] > distance){
+      distance_f = this.distances[i];
+      if(i > 0)
+      distance_i = this.distances[i-1];
+      else
+      distance_i = 0;
 
-        control_point_i = this.control_points[i];
-        if(i == this.control_points.length - 1)
-          control_point_f = this.control_points[0];
-        else
-          control_point_f = this.control_points[i+1];
+      control_point_i = this.control_points[i];
+      if(i == this.control_points.length - 1)
+      control_point_f = this.control_points[0];
+      else
+      control_point_f = this.control_points[i+1];
 
-        break;
-      }
+      break;
+    }
   }
 
-  control_point_phase = (distance_f-distance)/(distance_f-distance_i);
+  control_point_phase = (distance-distance_i)/(distance_f-distance_i);
 
-  console.log(distance_i);
-  console.log(distance);
-  console.log(distance_f);
-
-  control_point.push(
-    control_point_phase*(control_point_f[0]+control_point_i[0]),
-    control_point_phase*(control_point_f[1]+control_point_i[1]),
-    control_point_phase*(control_point_f[2]+control_point_i[2])
+  var vector = [];
+  vector.push(
+    control_point_f[0]-control_point_i[0],
+    control_point_f[1]-control_point_i[1],
+    control_point_f[2]-control_point_i[2]
   );
 
-  console.log(control_point_i);
-  console.log(control_point);
-  console.log(control_point_f);
+  control_point.push(
+    control_point_i[0]+control_point_phase*vector[0],
+    control_point_i[1]+control_point_phase*vector[1],
+    control_point_i[2]+control_point_phase*vector[2]
+  );
+
 
   this.scene.translate(
     control_point[0],
     control_point[1],
     control_point[2]
   );
-
-
-
-/*
-  var phase = (time%this.span)/this.span;
-  var distance_phase = phase*this.total_distance;
-  var control_point_i = [], control_point_f = [], control_point_phase = [];
-  var distance_i, distance_f;
-
-  for(var i = 0 ; i < this.distances.length;i++){
-
-    if(this.distances[i] > distance_phase){
-
-      distance_f = this.distances[i];
-      if(i > 0){
-        distance_i = this.distances[i-1];
-      }
-      else {
-        distance_i = 0;
-      }
-
-      control_point_i = this.control_points[i];
-      if(i == this.control_points.length - 1){
-        control_point_f = this.control_points[0];
-      }
-      else {
-        control_point_f = this.control_points[i+1];
-      }
-
-      break;
-    }
-  }
-  console.log(distance_phase);
-  console.log(control_point_i);
-  console.log(control_point_f);
-
-
-  control_point_phase.push(
-    phase*(control_point_f[0]-control_point_i[0]),
-    phase*(control_point_f[0]-control_point_i[0]),
-    phase*(control_point_f[0]-control_point_i[0])
-  );
-  console.log(control_point_phase);
-
-/*
   this.scene.rotate(
-    Math.atan(
-      (control_point_f[0]-control_point_i[0])/
-      (control_point_f[1]-control_point_i[1])
-    ),
-    0,
-    0,
-    1
+    angle_between(vector,),
+    cross
   );
-
   this.scene.rotate(
-    Math.atan(
-      (control_point_f[0]-control_point_i[0])/
-      (control_point_f[2]-control_point_i[2])
-    ),
-    0,
+    Math.atan(vector[1]/vector[2]),
     1,
+    0,
     0
   );
 
-  this.scene.translate(
-    control_point_phase[0],
-    control_point_phase[1],
-    control_point_phase[2]
-  );
-  */
+
+
 }
 
 /*CIRCULAR ANIMATION*/
@@ -233,4 +172,28 @@ this.scene.translate(
 );
 
 
+}
+
+function cross(u,v){
+  return [
+    u[1]*v[2]-u[2]*v[1],
+    u[2]*v[0]-u[0]-v[2],
+    u[0]*v[1]-u[1]*v[0]
+  ];
+}
+
+function angle_between(u,v){
+  return Math.acos(scalar_product(u,v)/vector_size(u)/vector_size(v));
+}
+
+function vector_size(u){
+  return sqrt(
+    pow(u[0],2),
+    pow(u[1],2),
+    pow(u[2],2)
+  );
+}
+
+function scalar_product(u,v){
+  return u[0]*v[0] + u[1]*v[1] + u[2]*v[2];
 }
