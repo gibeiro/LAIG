@@ -76,6 +76,8 @@ scene.prototype.onGraphLoaded = function () {
 
 	for (var i = 0; i < count; i++)
 		this.lights[i].update();
+
+		this.setUpdatePeriod(1);
 };
 
 scene.prototype.display = function () {
@@ -120,6 +122,10 @@ scene.prototype.runGraph = function (node) {
 
 	//Apply transformation matrix
 	this.multMatrix(node.mat);
+
+		for(var i = 0; i < node.animations.length; i++)
+			if(node.animations[i] != null)
+				node.animations[i].update(this.currTime);
 
 	//Draws primitive (if it has one)
 	if (node.primitive != null)
@@ -187,3 +193,7 @@ scene.prototype.resetCamera = function () {
 scene.prototype.changeMaterials = function () {
 	this.graph.changeNodesMaterialIndex(this.graph.rootNode);
 }
+
+scene.prototype.update = function(currTime){
+		this.currTime = currTime;
+};

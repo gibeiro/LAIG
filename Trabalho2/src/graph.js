@@ -138,36 +138,39 @@ graph.prototype.parseData = function (rootElement) {
 	this.rootNode;
 	err = this.parseNodes(rootElement);
 	if (err != null) return err;
+
+	console.log(this);
 };
 
 graph.prototype.parseAnimations = function(rootElement){
 	var animations = rootElement.getElementsByTagName('animations')[0];
+
 	for(var i = 0; i < animations.children.length; i++){
-			var animation = animations.children[i];
+		var animation = animations.children[i];
+		var animation_obj = {};
+		animation_obj.id = this.reader.getString(animation,'id');
+		animation_obj.span = this.reader.getFloat(animation,'span');
+		animation_obj.type = this.reader.getItem(animation,'type',['linear','circular']);
 
-			var id = this.reader.getString(animation,'id');
-			var span = this.reader.getFloat(animation,'span');
-			var type = this.reader.getItem(animation,'type',['linear','circular']);
-
-		if(type == 'linear'){
+		if(animation_obj.type == 'linear'){
+			animation_obj.control_points = [];
 			for(var j = 0; j < animation.children.length; j++){
 				var controlpoint = animation.children[j];
-				var xx = this.reader.getFloat(controlpoint,'xx');
-				var yy = this.reader.getFloat(controlpoint,'yy');
-				var zz = this.reader.getFloat(controlpoint,'zz');
+				var control_point = [];
+				control_point[0] = this.reader.getFloat(controlpoint,'xx');
+				control_point[1] = this.reader.getFloat(controlpoint,'yy');
+				control_point[2] = this.reader.getFloat(controlpoint,'zz');
+				animation_obj.control_points.push(control_point);
 			}
 		}
-		else if(type == 'circular'){
-			var center = this.reader.getXYZ(animation, 'center');
-			var radius = this.reader.getFloat(animation, 'radius');
-			var startang = this.reader.getFloat(animation, 'startang');
-			var rotang = this.reader.getFloat(animation, 'rotang');
+		else if(animation_obj.type == 'circular'){
+			animation_obj.center = this.getXYZ(animation, 'center');
+			animation_obj.radius = this.reader.getFloat(animation, 'radius');
+			animation_obj.startang = this.reader.getFloat(animation, 'startang');
+			animation_obj.rotang = this.reader.getFloat(animation, 'rotang');
 		}
-		else
-			this.onXMError('invalid animation type');
-		}
-
-
+		this.animations.push(animation_obj);
+	}
 };
 
 graph.prototype.parseScene = function (rootElement) {
@@ -537,7 +540,7 @@ graph.prototype.parseNode = function (componentsList, component, parentNode) {
 								materialRef.diffuse.g,
 								materialRef.diffuse.b,
 								materialRef.diffuse.a
-							 );
+							);
 							material.setSpecular(
 								materialRef.specular.r,
 								materialRef.specular.g,
@@ -643,8 +646,48 @@ graph.prototype.parseNode = function (componentsList, component, parentNode) {
 				}
 			}
 		}
+		var animationElem = component.getElementsByTagName('animation')[0];
+		var animations = [];
+		if(animationElem != null){
+			for(var i = 0; i < animationElem.children.length; i++){
+				var animationId = this.reader.getString(animationElem.children[i],'id',true);
+
+				for(var j = 0; j < this.animations.length; j++){
+					if(this.animations[i].id != id){
+						animations.push(this.generateAnimation(this.animations[j]));
+						break;
+					}
+				}
+			}
+		}
+		node.animations = animations;
 
 		return node;
+	}
+
+	graph.prototype.generateAnimation = function(animation){
+		switch(animation.type){
+			case "linear":
+			return new LinearAnimation(
+				this.scene,
+				animation.span,
+				animation.control_points
+			);
+			case "circular":
+			return new CircularAnimation(
+				this.scene,
+				animation.span,
+				animation.center[0],
+				animation.center[1],
+				animation.center[2],
+				animation.radius,
+				animation.startang,
+				animation.rotang
+			);
+			default:
+			console.warn("Invali animation type!" + animation);
+			break;
+		}
 	}
 
 	graph.prototype.onXMLError = function (message) {
@@ -679,9 +722,15 @@ graph.prototype.parseNode = function (componentsList, component, parentNode) {
 	};
 
 	graph.prototype.getXYZ = function (element, required) {
-		var x = this.reader.getFloat(element, 'x', required);
-		var y = this.reader.getFloat(element, 'y', required);
-		var z = this.reader.getFloat(element, 'z', required);
+		var x = this.reader.getFloat(element, 'x', false);
+		var y = this.reader.getFloat(element, 'y', false);
+		var z = this.reader.getFloat(element, 'z', false);
+		if(x == null || y == null || z == null){
+			x = this.reader.getFloat(element, 'xx', false);
+			y = this.reader.getFloat(element, 'yy', false);
+			z = this.reader.getFloat(element, 'zz', false);
+		}
+
 		return vec3.fromValues(x, y, z);
 	};
 

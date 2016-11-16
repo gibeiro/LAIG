@@ -18,6 +18,7 @@ serialInclude([
   'src/primitives/sphere.js',
   'src/primitives/torus.js',
   'src/primitives/rectangle.js',
+  'src/animations.js',
   'src/interface.js',
   'src/scene.js',
   'src/graph.js',
@@ -32,7 +33,7 @@ main=function()
     app.setScene(myScene);
     app.setInterface(myInterface);
     myInterface.setActiveCamera(myScene.camera);
-    var filename = getUrlVars()['file'] || "../res/dsx/scene.dsx";
+    var filename = getUrlVars()['file'] || "../res/dsx/animation_test.dsx";
     var mySceneGraph = new graph(filename, myScene);
     app.run();
 }

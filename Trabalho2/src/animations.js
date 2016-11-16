@@ -1,16 +1,12 @@
-function Animation(scene, id, span) {
-  this.scene = scene;
-  this.id = id;
-  this.span = span;
-  this.matrixes = [];
-}
-
 /*LINEAR ANIMATION*/
-function LinearAnimation(scene, id, span, control_points){
-  if(control_points.length < 2)
-    console.warn("Animacao invalida - pontos de controlo insuficientes: " + control_points);
+function LinearAnimation(scene, span, control_points){
 
-  this = new Animation(scene, id, span);
+  console.log("new linear animation");
+  if(control_points.length < 2)
+  console.warn("Animacao invalida - pontos de controlo insuficientes: " + control_points);
+
+  this.scene = scene;
+  this.span = span*1000;
   this.control_points = control_points;
   this.distances = [];
   this.distances.push(
@@ -33,32 +29,36 @@ function LinearAnimation(scene, id, span, control_points){
   var last = control_points.length - 1;
   this.total_distance =
   Math.sqrt(
-    distances[last - 2] +
-      Math.pow(control_points[0][0] - control_points[last][0],2)+
-      Math.pow(control_points[0][1] - control_points[last][1],2)+
-      Math.pow(control_points[0][2] - control_points[last][2],2)
-    );
+    this.distances[last - 2] +
+    Math.pow(control_points[0][0] - control_points[last][0],2)+
+    Math.pow(control_points[0][1] - control_points[last][1],2)+
+    Math.pow(control_points[0][2] - control_points[last][2],2)
+  );
   this.distances.push(this.total_distance);
 }
 
+LinearAnimation.prototype.constructor = LinearAnimation;
+
 LinearAnimation.prototype.update = function(time){
+
+  console.log("linear animation update");
   var phase = (time%this.span)/this.span;
   var distance = phase*this.total_distance;
   var control_point_i, control_point_f, control_point_phase;
   var distance_i, distance_f;
   for(var i = 0 ; i < this.distances.length;i++){
-    if(distances[i] > distance){
+    if(this.distances[i] > distance){
       control_point_i = this.control_points[i];
       distance_f = this.distances[i];
       if(i == 0)
-        distance_i = 0;
+      distance_i = 0;
       else
-        distance_i = this.distances[i-1];
+      distance_i = this.distances[i-1];
       control_point_phase = (distance_f-distance_i)/(distance-distance_i);
       if(i + 1 == this.distances.length)
-        control_point_f = this.control_points[0];
+      control_point_f = this.control_points[0];
       else
-        control_point_f = this.control_points[i+1];
+      control_point_f = this.control_points[i+1];
       break;
     }
   }
@@ -99,25 +99,33 @@ LinearAnimation.prototype.update = function(time){
 
 
 
- /*CIRCULAR ANIMATION*/
-function CircularAnimation(scene, id, span,centerx,centery,centerz,radius,starang,rotang){
-    this = new Animation(scene, id, span);
-    this.centerx = centerx;
-    this.centery = centery;
-    this.centerz = centerz;
-    this.radius = radius;
-    this.starang = starang*Math.PI/180;
-    this.rotang = rotang*Math.PI/180;
+/*CIRCULAR ANIMATION*/
+function CircularAnimation(scene, span,centerx,centery,centerz,radius,starang,rotang){
+  console.log("new circular animation");
+  this.scene = scene;
+  this.span = span*1000;
+  this.centerx = centerx;
+  this.centery = centery;
+  this.centerz = centerz;
+  this.radius = radius;
+  this.starang = starang*Math.PI/180;
+  this.rotang = rotang*Math.PI/180;
 }
 
+CircularAnimation.prototype.constructor = CircularAnimation;
+
+
 CircularAnimation.prototype.update = function(time){
+
+  console.log("circular animation update");
+
   var phase = (time%this.span)/this.span;
 
   var orientation = phase*this.rotang;
   if(this.rotang > 0)
-    orientation += Math.PI/2;
+  orientation += Math.PI/2;
   else
-    orientation -= Math.PI/2;
+  orientation -= Math.PI/2;
 
   //orientacao do objecto
   this.scene.rotate(
