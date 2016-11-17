@@ -50,48 +50,48 @@ scene.prototype.setDefaultAppearance = function () {
 scene.prototype.onGraphLoaded = function () {
 	/*
 	this.setGlobalAmbientLight(
-		this.graph.ambientLight[0],
-		this.graph.ambientLight[1],
-		this.graph.ambientLight[2],
-		this.graph.ambientLight[3]
-	);
-	this.gl.clearColor(
-		this.graph.background[0],
-		this.graph.background[1],
-		this.graph.background[2],
-		this.graph.background[3]
-	);
-	*/
-	this.setGlobalAmbientLight(
-	0,
-		0,
-		0,
-		0
-	);
-	this.gl.clearColor(
+	this.graph.ambientLight[0],
+	this.graph.ambientLight[1],
+	this.graph.ambientLight[2],
+	this.graph.ambientLight[3]
+);
+this.gl.clearColor(
+this.graph.background[0],
+this.graph.background[1],
+this.graph.background[2],
+this.graph.background[3]
+);
+*/
+this.setGlobalAmbientLight(
 	0,
 	0,
 	0,
 	0
-	);
-	this.axis = this.graph.axis;
+);
+this.gl.clearColor(
+	0,
+	0,
+	0,
+	0
+);
+this.axis = this.graph.axis;
 
-	var count = 0;
-	for (var i = 0; i < this.graph.omniLights.length && count < 8; i++, count++)
-		this.copyLight(
-			this.lights[count],
-			this.graph.omniLights[i]
-		);
-	for (var i = 0; i < this.graph.spotLights.length && count < 8; i++, count++)
-		this.copyLight(
-			this.lights[count],
-			this.graph.spotLights[i]
-		);
+var count = 0;
+for (var i = 0; i < this.graph.omniLights.length && count < 8; i++, count++)
+this.copyLight(
+	this.lights[count],
+	this.graph.omniLights[i]
+);
+for (var i = 0; i < this.graph.spotLights.length && count < 8; i++, count++)
+this.copyLight(
+	this.lights[count],
+	this.graph.spotLights[i]
+);
 
-	for (var i = 0; i < count; i++)
-		this.lights[i].update();
+for (var i = 0; i < count; i++)
+this.lights[i].update();
 
-		this.setUpdatePeriod(1);
+this.setUpdatePeriod(1);
 };
 
 scene.prototype.display = function () {
@@ -134,20 +134,20 @@ scene.prototype.runGraph = function (node) {
 	//Apply material
 	node.materials[node.indexActiveMaterial].apply();
 
-	//Apply transformation matrix
-	this.multMatrix(node.mat);
+	if(node.animations[0] != null)
+		if(node.animations[0].update(this.currTime))
+				node.animations.shift();
 
-		for(var i = 0; i < node.animations.length; i++)
-			if(node.animations[i] != null)
-				node.animations[i].update(this.currTime);
+	//Apply transformation matrix
+	this.multMatrix(node.mat);	
 
 	//Draws primitive (if it has one)
 	if (node.primitive != null)
-	node.primitive.display();
+		node.primitive.display();
 
 	//Uses DFS
 	for (var i = 0; i < node.children.length; i++)
-	this.runGraph(node.children[i]);
+		this.runGraph(node.children[i]);
 
 	this.popMatrix();
 };
@@ -209,5 +209,5 @@ scene.prototype.changeMaterials = function () {
 }
 
 scene.prototype.update = function(currTime){
-		this.currTime = currTime;
+	this.currTime = currTime;
 };

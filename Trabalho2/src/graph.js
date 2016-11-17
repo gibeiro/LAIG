@@ -653,11 +653,12 @@ graph.prototype.parseNode = function (componentsList, component, parentNode) {
 				var animationId = this.reader.getString(animationElem.children[i],'id',true);
 
 				for(var j = 0; j < this.animations.length; j++){
-					if(this.animations[i].id != id){
+					if(this.animations[j].id == animationId){
 						animations.push(this.generateAnimation(this.animations[j]));
 						break;
 					}
 				}
+
 			}
 		}
 		node.animations = animations;
@@ -685,7 +686,7 @@ graph.prototype.parseNode = function (componentsList, component, parentNode) {
 				animation.rotang
 			);
 			default:
-			console.warn("Invali animation type!" + animation);
+			console.warn("Invalid animation type!" + animation);
 			break;
 		}
 	}
