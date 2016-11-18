@@ -13,6 +13,9 @@ function getUrlVars() {
 
 serialInclude([
   '../lib/CGF.js',
+  'src/primitives/patch.js',
+  'src/primitives/plane.js',
+  'src/primitives/vehicle.js',
   'src/primitives/cylinder.js',
   'src/primitives/triangle.js',
   'src/primitives/sphere.js',
@@ -33,7 +36,7 @@ main=function()
     app.setScene(myScene);
     app.setInterface(myInterface);
     myInterface.setActiveCamera(myScene.camera);
-    var filename = getUrlVars()['file'] || "../res/dsx/animation_test.dsx";
+    var filename = getUrlVars()['file'] || "../res/dsx/vehicle.dsx";
     var mySceneGraph = new graph(filename, myScene);
     app.run();
 }

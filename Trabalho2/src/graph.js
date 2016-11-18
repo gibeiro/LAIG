@@ -144,6 +144,8 @@ graph.prototype.parseData = function (rootElement) {
 
 graph.prototype.parseAnimations = function(rootElement){
 	var animations = rootElement.getElementsByTagName('animations')[0];
+	if(animations == null)
+		return;
 
 	for(var i = 0; i < animations.children.length; i++){
 		var animation = animations.children[i];
@@ -373,67 +375,117 @@ graph.prototype.parseTransformations = function (rootElement) {
 
 graph.prototype.parsePrimitives = function (rootElement) {
 	var primitivesElem = rootElement.getElementsByTagName('primitives')[0];
-	var primitives = primitivesElem.getElementsByTagName('primitive');
+	var primitives = primitivesElem.children;
 
 	for (var i = 0; i < primitives.length; i++) {
 		var id = this.reader.getString(primitives[i], 'id', true);
+		var primitive = primitives[i].children[0];
 
-		var typeElem = null;
-		if ((typeElem = primitives[i].getElementsByTagName('rectangle')[0]) != null) {
+		switch(primitive.tagName){
+
+			case "rectangle":
 			var rectangle = {};
 			rectangle.id = id;
 			rectangle.type = "rectangle";
-			rectangle.x1 = this.reader.getFloat(typeElem, 'x1', true);
-			rectangle.y1 = this.reader.getFloat(typeElem, 'y1', true);
-			rectangle.x2 = this.reader.getFloat(typeElem, 'x2', true);
-			rectangle.y2 = this.reader.getFloat(typeElem, 'y2', true);
+			rectangle.x1 = this.reader.getFloat(primitive, 'x1', true);
+			rectangle.y1 = this.reader.getFloat(primitive, 'y1', true);
+			rectangle.x2 = this.reader.getFloat(primitive, 'x2', true);
+			rectangle.y2 = this.reader.getFloat(primitive, 'y2', true);
 			this.primitives.push(rectangle);
+			break;
 
-		} else if ((typeElem = primitives[i].getElementsByTagName('triangle')[0]) != null) {
+			case "triangle":
 			var triangle = {};
 			triangle.id = id;
 			triangle.type = "triangle";
-			triangle.x1 = this.reader.getFloat(typeElem, 'x1', true);
-			triangle.y1 = this.reader.getFloat(typeElem, 'y1', true);
-			triangle.z1 = this.reader.getFloat(typeElem, 'z1', true);
-			triangle.x2 = this.reader.getFloat(typeElem, 'x2', true);
-			triangle.y2 = this.reader.getFloat(typeElem, 'y2', true);
-			triangle.z2 = this.reader.getFloat(typeElem, 'z2', true);
-			triangle.x3 = this.reader.getFloat(typeElem, 'x3', true);
-			triangle.y3 = this.reader.getFloat(typeElem, 'y3', true);
-			triangle.z3 = this.reader.getFloat(typeElem, 'z3', true);
+			triangle.x1 = this.reader.getFloat(primitive, 'x1', true);
+			triangle.y1 = this.reader.getFloat(primitive, 'y1', true);
+			triangle.z1 = this.reader.getFloat(primitive, 'z1', true);
+			triangle.x2 = this.reader.getFloat(primitive, 'x2', true);
+			triangle.y2 = this.reader.getFloat(primitive, 'y2', true);
+			triangle.z2 = this.reader.getFloat(primitive, 'z2', true);
+			triangle.x3 = this.reader.getFloat(primitive, 'x3', true);
+			triangle.y3 = this.reader.getFloat(primitive, 'y3', true);
+			triangle.z3 = this.reader.getFloat(primitive, 'z3', true);
 			this.primitives.push(triangle);
+			break;
 
-		} else if ((typeElem = primitives[i].getElementsByTagName('cylinder')[0]) != null) {
-			var cylinder = {};
-			cylinder.id = id;
-			cylinder.type = "cylinder";
-			cylinder.base = this.reader.getFloat(typeElem, 'base', true);
-			cylinder.top = this.reader.getFloat(typeElem, 'top', true);
-			cylinder.height = this.reader.getFloat(typeElem, 'height', true);
-			cylinder.slices = this.reader.getFloat(typeElem, 'slices', true);
-			cylinder.stacks = this.reader.getFloat(typeElem, 'stacks', true);
-			this.primitives.push(cylinder);
-
-		} else if ((typeElem = primitives[i].getElementsByTagName('sphere')[0]) != null) {
-			var sphere = {};
-			sphere.id = id;
-			sphere.type = "sphere";
-			sphere.radius = this.reader.getFloat(typeElem, 'radius', true);
-			sphere.slices = this.reader.getFloat(typeElem, 'slices', true);
-			sphere.stacks = this.reader.getFloat(typeElem, 'stacks', true);
-			this.primitives.push(sphere);
-
-		} else if ((typeElem = primitives[i].getElementsByTagName('torus')[0]) != null) {
+			case "torus":
 			var torus = {};
 			torus.id = id;
 			torus.type = "torus";
-			torus.inner = this.reader.getFloat(typeElem, 'inner', true);
-			torus.outer = this.reader.getFloat(typeElem, 'outer', true);
-			torus.slices = this.reader.getFloat(typeElem, 'slices', true);
-			torus.loops = this.reader.getFloat(typeElem, 'loops', true);
+			torus.inner = this.reader.getFloat(primitive, 'inner', true);
+			torus.outer = this.reader.getFloat(primitive, 'outer', true);
+			torus.slices = this.reader.getFloat(primitive, 'slices', true);
+			torus.loops = this.reader.getFloat(primitive, 'loops', true);
 			this.primitives.push(torus);
+			break;
 
+			case "sphere":
+			var sphere = {};
+			sphere.id = id;
+			sphere.type = "sphere";
+			sphere.radius = this.reader.getFloat(primitive, 'radius', true);
+			sphere.slices = this.reader.getFloat(primitive, 'slices', true);
+			sphere.stacks = this.reader.getFloat(primitive, 'stacks', true);
+			this.primitives.push(sphere);
+			break;
+
+			case "cylinder":
+			var cylinder = {};
+			cylinder.id = id;
+			cylinder.type = "cylinder";
+			cylinder.base = this.reader.getFloat(primitive, 'base', true);
+			cylinder.top = this.reader.getFloat(primitive, 'top', true);
+			cylinder.height = this.reader.getFloat(primitive, 'height', true);
+			cylinder.slices = this.reader.getFloat(primitive, 'slices', true);
+			cylinder.stacks = this.reader.getFloat(primitive, 'stacks', true);
+			this.primitives.push(cylinder);
+			break;
+
+			case "plane":
+			var plane = {};
+			plane.id = id;
+			plane.type = "plane";
+			plane.dimX = this.reader.getFloat(primitive, 'dimX', true);
+			plane.dimY = this.reader.getFloat(primitive, 'dimY', true);
+			plane.partsX = this.reader.getFloat(primitive, 'partsX', true);
+			plane.partsY = this.reader.getFloat(primitive, 'partsY', true);
+			this.primitives.push(plane);
+			break;
+
+			case "patch":
+			var patch = {};
+			patch.id = id;
+			patch.type = "patch";
+			patch.orderU = this.reader.getFloat(primitive, 'orderU', true);
+			patch.orderV = this.reader.getFloat(primitive, 'orderV', true);
+			patch.partsU = this.reader.getFloat(primitive, 'partsU', true);
+			patch.partsV = this.reader.getFloat(primitive, 'partsV', true);
+			patch.controlPoints = [];
+			for(var j = 0; j < patch.orderU + 1; j++){
+				var degreePoints = [];
+				for(var k = 0; k < patch.orderV + 1; k++){
+					var index = j*(patch.orderV + 1)+k;
+					var controlPoint = [];
+					controlPoint.push(this.reader.getFloat(primitive.children[index], 'x', true));
+					controlPoint.push(this.reader.getFloat(primitive.children[index], 'y', true));
+					controlPoint.push(this.reader.getFloat(primitive.children[index], 'z', true));
+					controlPoint.push(1);
+					degreePoints.push(controlPoint);
+				}
+				patch.controlPoints.push(degreePoints);
+			}
+			console.log(patch);
+			this.primitives.push(patch);
+			break;
+
+			case "vehicle":
+			break;
+
+			default:
+			console.log("Invalid primitive type: " + primitive.tagName);
+			break;
 		}
 	}
 };
@@ -738,6 +790,37 @@ graph.prototype.parseNode = function (componentsList, component, parentNode) {
 	graph.prototype.generatePrimitive = function (primitiveInfo, length_s, length_t) {
 
 		switch(primitiveInfo.type){
+			case "plane":
+			return new plane(
+				this.scene,
+				primitiveInfo.dimX,
+				primitiveInfo.dimY,
+				primitiveInfo.partsX,
+				primitiveInfo.partsY,
+				length_s,
+				length_t
+			);
+			case "patch":
+			return new patch(
+				this.scene,
+				primitiveInfo.orderU,
+				primitiveInfo.orderV,
+				primitiveInfo.partsU,
+				primitiveInfo.partsV,
+				primitiveInfo.controlPoints,
+				length_s,
+				length_t
+			);
+			case "vehicle":
+			return new vehicle(
+				this.scene,
+				primitiveInfo.x1,
+				primitiveInfo.y1,
+				primitiveInfo.x2,
+				primitiveInfo.y2,
+				length_s,
+				length_t
+			);
 			case "rectangle":
 			return new rectangle(
 				this.scene,
@@ -748,7 +831,7 @@ graph.prototype.parseNode = function (componentsList, component, parentNode) {
 				length_s,
 				length_t
 			);
-			break;
+
 			case "triangle":
 			return new triangle(
 				this.scene,
@@ -764,7 +847,6 @@ graph.prototype.parseNode = function (componentsList, component, parentNode) {
 				length_s,
 				length_t
 			);
-			break;
 			case "cylinder":
 			return new cylinder(
 				this.scene,
@@ -776,7 +858,6 @@ graph.prototype.parseNode = function (componentsList, component, parentNode) {
 				length_s,
 				length_t
 			);
-			break;
 			case "sphere":
 			return new sphere(
 				this.scene,
@@ -786,7 +867,6 @@ graph.prototype.parseNode = function (componentsList, component, parentNode) {
 				length_s,
 				length_t
 			);
-			break;
 			case "torus":
 			return new torus(
 				this.scene,
@@ -797,8 +877,7 @@ graph.prototype.parseNode = function (componentsList, component, parentNode) {
 				length_s,
 				length_t
 			);
-			break;
-		};
+		}
 	}
 
 	graph.prototype.checkForDoubleId = function (components) {
