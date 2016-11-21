@@ -1,8 +1,8 @@
-function patch(scene,dimX,dimY,partsU,partsV,controlvertexes) {
-  var knots1 = this.getKnotsVector(dimX);
-  var knots2 = this.getKnotsVector(dimY);
+function patch(scene,orderU,orderV,partsU,partsV,controlvertexes) {
+  var knots1 = this.getKnotsVector(orderU);
+  var knots2 = this.getKnotsVector(orderV);
 
-  var nurbsSurface = new CGFnurbsSurface(dimX, dimY, knots1, knots2, controlvertexes);
+  var nurbsSurface = new CGFnurbsSurface(orderU, orderV, knots1, knots2, controlvertexes);
   getSurfacePoint = function(u, v) {
     return nurbsSurface.getPoint(u, v);
   };

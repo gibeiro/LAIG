@@ -1,5 +1,13 @@
 var degToRad = Math.PI / 180.0;
 
+
+/**
+ * Scene graph constructor
+ *
+ * @param  {type} filename Path of the .dsx file
+ * @param  {type} scene    CGFscene object
+ * @return {type}          graph object loaded with the .dsx informaton
+ */
 function graph(filename, scene) {
 	this.loadedOk = null;
 	this.scene = scene;
@@ -9,6 +17,10 @@ function graph(filename, scene) {
 }
 graph.prototype.constructor = graph;
 
+
+/**
+ * Handles the parsing and validation of the .dsx information *
+ */
 graph.prototype.onXMLReady = function () {
 	console.log("XML Loading finished.");
 	var rootElement = this.reader.xmlDoc.documentElement;
@@ -22,6 +34,12 @@ graph.prototype.onXMLReady = function () {
 	this.scene.onGraphLoaded();
 };
 
+
+/**
+ * Validates de order of the XML nodes on the .dsx file
+ *
+ * @param  {type} rootElement DOM object with the root node of the file
+ */
 graph.prototype.validateOrder = function (rootElement) {
 	var nodes = rootElement.childNodes;
 	var types = [];
@@ -84,9 +102,12 @@ graph.prototype.validateOrder = function (rootElement) {
 	return true;
 }
 
-/*
-* Parse the data to the scene
-*/
+
+/**
+ * Parses data from the .dsx file
+ *
+ * @param  {type} rootElement DOM object with the root node of the file
+ */
 graph.prototype.parseData = function (rootElement) {
 	/*
 	* The variables before each method are the variables
@@ -142,6 +163,11 @@ graph.prototype.parseData = function (rootElement) {
 	console.log(this);
 };
 
+/**
+ * Parses scene animations from the .dsx files
+ *
+ * @param  {type} rootElement DOM object with the root node of the file
+ */
 graph.prototype.parseAnimations = function(rootElement){
 	var animations = rootElement.getElementsByTagName('animations')[0];
 	if(animations == null)
@@ -166,7 +192,7 @@ graph.prototype.parseAnimations = function(rootElement){
 			}
 		}
 		else if(animation_obj.type == 'circular'){
-			animation_obj.center = this.getXYZ(animation, 'center');
+			animation_obj.center = this.reader.getVector3(animation, 'center');
 			animation_obj.radius = this.reader.getFloat(animation, 'radius');
 			animation_obj.startang = this.reader.getFloat(animation, 'startang');
 			animation_obj.rotang = this.reader.getFloat(animation, 'rotang');
@@ -175,37 +201,52 @@ graph.prototype.parseAnimations = function(rootElement){
 	}
 };
 
+
+/**
+ * Parses scene information from .dsx file
+ *
+ * @param  {type} rootElement DOM object with the root node of the file
+ */
 graph.prototype.parseScene = function (rootElement) {
 	var scene = rootElement.getElementsByTagName('scene')[0];
 	var axisLength = this.reader.getFloat(scene, 'axis_length', true);
+	var axisThickness = 0.2
 	this.rootNodeId = this.reader.getString(scene, 'root', true);
-	this.axis = new CGFaxis(this.scene, axisLength, 0.2);
-
-	return null;
+	if(axisLength == 0)
+		axisThickness = 0;
+	this.axis = new CGFaxis(this.scene, axisLength, axisThickness);
 };
 
+
+/**
+ * Parses scene views from the .dsx file
+ *
+ * @param  {type} rootElement DOM object with the root node of the file
+ */
 graph.prototype.parseViews = function (rootElement) {
 	var views = rootElement.getElementsByTagName('views')[0];
+	this.views = [];
+	this.views.default = this.reader.getString(views,'default');
 
-	{
-		var perspCams = views.getElementsByTagName('perpective');
-		for (var i = 0; i < perspCams.length; i++) {
-			var id = this.reader.getString(perspCams[i], 'id', true);
-			var near = this.reader.getFloat(perspCams[i], 'near', true);
-			var far = this.reader.getFloat(perspCams[i], 'far', true);
-			var fov = this.reader.getFloat(perspCams[i], 'angle', true);
-			var fromElem = perspCams[i].getElementsByTagName('from')[0];
-			var toElem = perspCams[i].getElementsByTagName('to')[0];
-			var position = this.getXYZ(fromElem, true);
-			var target = this.getXYZ(toElem, true);
+		for (var i = 0; i < views.children.length; i++) {
+			var id = this.reader.getString(views.children[i], 'id', true);
+			var near = this.reader.getFloat(views.children[i], 'near', true);
+			var far = this.reader.getFloat(views.children[i], 'far', true);
+			var fov = this.reader.getFloat(views.children[i], 'angle', true);
+			var position = this.getXYZ(views.children[i].children[0], true);
+			var target = this.getXYZ(views.children[i].children[1], true);
 			var cam = new CGFcamera(fov, near, far, position, target);
 			cam.id = id;
-			this.perspCams.push(cam);
+			this.views.push(cam);
 		}
-	}
 };
 
 
+/**
+ * Parses scene illumination from the .dsx file
+ *
+ * @param  {type} rootElement DOM object with the root node of the file
+ */
 graph.prototype.parseIllumination = function (rootElement) {
 	var illumination = rootElement.getElementsByTagName("illumination")[0];
 	var ambient = illumination.getElementsByTagName('ambient')[0];
@@ -214,6 +255,12 @@ graph.prototype.parseIllumination = function (rootElement) {
 	this.background = this.getRGBA(background, true);
 };
 
+
+/**
+ * Parses scene lights fromm the .dsx file
+ *
+ * @param  {type} rootElement DOM object with the root node of the file
+ */
 graph.prototype.parseLights = function (rootElement) {
 	var lights = rootElement.getElementsByTagName('lights')[0];
 	{
@@ -291,6 +338,12 @@ graph.prototype.parseLights = function (rootElement) {
 	}
 };
 
+
+/**
+ * Parses scene textures from the .dsx file
+ *
+ * @param  {type} rootElement DOM object with the root node of the file
+ */
 graph.prototype.parseTextures = function (rootElement) {
 	var texturesElem = rootElement.getElementsByTagName('textures')[0];
 	var textures = texturesElem.getElementsByTagName('texture');
@@ -308,6 +361,12 @@ graph.prototype.parseTextures = function (rootElement) {
 	}
 };
 
+
+/**
+ * Parses scene materials from the .dsx file
+ *
+ * @param  {type} rootElement DOM object with the root node of the file
+ */
 graph.prototype.parseMaterials = function (rootElement) {
 	var materialsElem = rootElement.getElementsByTagName('materials')[0];
 	var materials = materialsElem.getElementsByTagName('material');
@@ -332,6 +391,12 @@ graph.prototype.parseMaterials = function (rootElement) {
 	}
 };
 
+
+/**
+ * Parses scene geometric transformations from the .dsx file
+ *
+ * @param  {type} rootElement DOM object with the root node of the file
+ */
 graph.prototype.parseTransformations = function (rootElement) {
 	var transformationsElem = rootElement.getElementsByTagName('transformations')[0];
 	var transformations = transformationsElem.getElementsByTagName('transformation');
@@ -373,6 +438,12 @@ graph.prototype.parseTransformations = function (rootElement) {
 	}
 };
 
+/**
+ * Parses scene primitives from the .dsx file
+ *
+ * @param  {type} rootElement DOM object with the root node of the file
+ */
+
 graph.prototype.parsePrimitives = function (rootElement) {
 	var primitivesElem = rootElement.getElementsByTagName('primitives')[0];
 	var primitives = primitivesElem.children;
@@ -382,6 +453,44 @@ graph.prototype.parsePrimitives = function (rootElement) {
 		var primitive = primitives[i].children[0];
 
 		switch(primitive.tagName){
+			case "chessboard":
+			var chessboard = {};
+			chessboard.id = id;
+			chessboard.type = "chessboard";
+			chessboard.du = this.reader.getInteger(primitive, 'du', true);
+			chessboard.dv = this.reader.getInteger(primitive, 'dv', true);
+			var textureref = this.reader.getString(primitive, 'textureref', true);
+			chessboard.texture = null;
+			for(var i = 0; i < this.textures.length; i++)
+				if(this.textures[i].id == textureref){
+					chessboard.texture = this.textures[i];
+					break;
+				}
+			chessboard.su = this.reader.getInteger(primitive, 'su', true);
+			chessboard.sv = this.reader.getInteger(primitive, 'sv', true);
+			chessboard.c1 = [];
+			chessboard.c1.push(
+				this.reader.getFloat(primitive.children[0],'r',true),
+					this.reader.getFloat(primitive.children[0],'g',true),
+					this.reader.getFloat(primitive.children[0],'b',true),
+					this.reader.getFloat(primitive.children[0],'a',true)
+			);
+			chessboard.c2 = [];
+			chessboard.c2.push(
+				this.reader.getFloat(primitive.children[1],'r',true),
+					this.reader.getFloat(primitive.children[1],'g',true),
+					this.reader.getFloat(primitive.children[1],'b',true),
+					this.reader.getFloat(primitive.children[1],'a',true)
+			);
+			chessboard.cs = [];
+			chessboard.cs.push(
+				this.reader.getFloat(primitive.children[2],'r',true),
+					this.reader.getFloat(primitive.children[2],'g',true),
+					this.reader.getFloat(primitive.children[2],'b',true),
+					this.reader.getFloat(primitive.children[2],'a',true)
+			);
+			this.primitives.push(chessboard);
+			break;
 
 			case "rectangle":
 			var rectangle = {};
@@ -476,11 +585,14 @@ graph.prototype.parsePrimitives = function (rootElement) {
 				}
 				patch.controlPoints.push(degreePoints);
 			}
-			console.log(patch);
 			this.primitives.push(patch);
 			break;
 
 			case "vehicle":
+			var vehicle = {};
+			vehicle.id = id;
+			vehicle.type = "vehicle";
+			this.primitives.push(vehicle);
 			break;
 
 			default:
@@ -490,6 +602,13 @@ graph.prototype.parsePrimitives = function (rootElement) {
 	}
 };
 
+
+/**
+ * Parses scene nodes from the .dsx file
+ *
+ * @param  {type} rootElement DOM object with the root node of the file
+ * @return {type} Node object with the root scene node information
+ */
 graph.prototype.parseNodes = function (rootElement) {
 	var componentsElem = rootElement.getElementsByTagName('components')[0];
 	var components = componentsElem.getElementsByTagName('component');
@@ -507,6 +626,15 @@ graph.prototype.parseNodes = function (rootElement) {
 	return this.rootNode;
 };
 
+
+/**
+ * Parses a scene node from the .dsx file
+ *
+ * @param  {type} componentsList Array of DOM objects with the component nodes from the file
+ * @param  {type} component      DOM object with the component information to parse
+ * @param  {type} parentNode     Node object parsed from the parent of the component parameter
+ * @return {type}                Node object parsed from the component parameter
+ */
 graph.prototype.parseNode = function (componentsList, component, parentNode) {
 	var node = new Node(component.id);
 
@@ -679,6 +807,13 @@ graph.prototype.parseNode = function (componentsList, component, parentNode) {
 
 				for (var j = 0; j < this.primitives.length; j++) {
 					if (primitiveId == this.primitives[j].id) {
+						/*
+						if(this.primitives[j].type == 'chessboard'){
+							this.primitives[j].texture = node.materials[0];
+							if(this.primitives[j].texture != null)
+							this.primitives[j].texture.loadTexture(this.primitives[j].textureref);
+						}
+						*/
 						if (node.texture != null)
 						node.primitive =
 						this.generatePrimitive(
@@ -718,6 +853,14 @@ graph.prototype.parseNode = function (componentsList, component, parentNode) {
 		return node;
 	}
 
+
+	/**
+	 * Generates an Animation object from a structure containing
+	 * the needed information (span, type, etc.)
+	 *
+	 * @param  {type} animation Structure with the animation's information
+	 * @return {type}           Animation object
+	 */
 	graph.prototype.generateAnimation = function(animation){
 		switch(animation.type){
 			case "linear":
@@ -743,11 +886,25 @@ graph.prototype.parseNode = function (componentsList, component, parentNode) {
 		}
 	}
 
+
+	/**
+	 * Handles the event of a parsing error
+	 *
+	 * @param  {type} message Message to be displayed on error
+	 */
 	graph.prototype.onXMLError = function (message) {
 		console.error("XML Loading Error: " + message);
 		this.loadedOk = false;
 	};
 
+
+	/**
+	 * Searches array for a component structure with a certain id
+	 *
+	 * @param  {type} list Array of component structures
+	 * @param  {type} id   Id of the structure to found
+	 * @return {type}      Component structure if found, null otherwise
+	 */
 	graph.prototype.getComponentFromId = function (list, id) {
 		for (var i = 0; i < list.length; i++) {
 			var component = list[i];
@@ -757,6 +914,14 @@ graph.prototype.parseNode = function (componentsList, component, parentNode) {
 		}
 	}
 
+
+	/**
+	 * Parses RGBA values into an array from a DOM element
+	 *
+	 * @param  {type} element  DOM element to be parsed
+	 * @param  {type} required True if all 4 RGBA values are required to exist, false otherwise
+	 * @return {type}          Array[4] with the RGBA values
+	 */
 	graph.prototype.getRGBA = function (element, required) {
 		var r = this.reader.getFloat(element, 'r', required);
 		var g = this.reader.getFloat(element, 'g', required);
@@ -765,6 +930,14 @@ graph.prototype.parseNode = function (componentsList, component, parentNode) {
 		return vec4.fromValues(r, g, b, a);
 	};
 
+
+	/**
+	 * Parses RGBA values into a structure from a DOM element
+	 *
+	 * @param  {type} element  DOM element to be parsed
+	 * @param  {type} required True if all 4 RGBA values are required to exist, false otherwise
+	 * @return {type}          Structure with the RGBA values
+	 */
 	graph.prototype.getColorFromRGBA = function (element, required) {
 		var color = {};
 		color.r = this.reader.getFloat(element, 'r', required);
@@ -774,6 +947,14 @@ graph.prototype.parseNode = function (componentsList, component, parentNode) {
 		return color;
 	};
 
+
+	/**
+	 * Parses XYZ values into an array from a DOM element
+	 *
+	 * @param  {type} element  DOM element to be parsed
+	 * @param  {type} required True if all 3 XYZ values are required to exist, false otherwise
+	 * @return {type}          Array[3] with the XYZ values
+	 */
 	graph.prototype.getXYZ = function (element, required) {
 		var x = this.reader.getFloat(element, 'x', false);
 		var y = this.reader.getFloat(element, 'y', false);
@@ -787,9 +968,32 @@ graph.prototype.parseNode = function (componentsList, component, parentNode) {
 		return vec3.fromValues(x, y, z);
 	};
 
+
+	/**
+	 * Generate a primitive object from a primitive structure
+	 *
+	 * @param  {type} primitiveInfo Structure with the primitive information
+	 * @param  {type} length_s      Float[0..1] with the s texture mapping length
+	 * @param  {type} length_t      Float[0..1] with the t texture mapping length
+	 * @return {type}               Primitive object
+	 */
 	graph.prototype.generatePrimitive = function (primitiveInfo, length_s, length_t) {
 
 		switch(primitiveInfo.type){
+			case "chessboard":
+			return new chessboard(
+				this.scene,
+				primitiveInfo.du,
+				primitiveInfo.dv,
+				primitiveInfo.texture,
+				primitiveInfo.su,
+				primitiveInfo.sv,
+				primitiveInfo.c1,
+				primitiveInfo.c2,
+				primitiveInfo.cs,
+				length_s,
+				length_t
+			);
 			case "plane":
 			return new plane(
 				this.scene,
@@ -814,10 +1018,6 @@ graph.prototype.parseNode = function (componentsList, component, parentNode) {
 			case "vehicle":
 			return new vehicle(
 				this.scene,
-				primitiveInfo.x1,
-				primitiveInfo.y1,
-				primitiveInfo.x2,
-				primitiveInfo.y2,
 				length_s,
 				length_t
 			);
@@ -880,6 +1080,12 @@ graph.prototype.parseNode = function (componentsList, component, parentNode) {
 		}
 	}
 
+
+	/**
+	 * Checks if all components have an unique id
+	 *
+	 * @param  {type} components Array of DOM component elements
+	 */
 	graph.prototype.checkForDoubleId = function (components) {
 		var idCollection = [];
 
@@ -890,10 +1096,22 @@ graph.prototype.parseNode = function (componentsList, component, parentNode) {
 		for (var j = i + 1; j < idCollection.length; j++)
 		if (idCollection[i] == idCollection[j])
 		return "there are components with the same id: '" + idCollection[i] + "'!";
-
-		return null;
 	}
 
+
+	/**
+	 * Applies a new geometric transformation to an array
+	 * of transformation matrixes.
+	 *
+	 *
+	 * @param  {type} type            String name with the type of transformation (rotate, translate, scale)
+	 * @param  {type} transformations Array os matrixes to be transformed
+	 * @param  {type} x               Float with x value for the transformation
+	 * @param  {type} y               Float with y value for the transformation
+	 * @param  {type} z               Float with z value for the transformation
+	 * @param  {type} axis            Float with x value in case of a rotation
+	 * @param  {type} angle           Float with x value in case of a rotation
+ */
 	graph.prototype.applyTransform = function (type, transformations, x, y, z, axis, angle) {
 		switch (type) {
 			case "translate":

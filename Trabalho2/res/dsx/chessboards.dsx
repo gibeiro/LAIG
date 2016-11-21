@@ -1,0 +1,114 @@
+<dsx>
+  <scene root="root" axis_length="0" />
+  <views default="persp">
+    <perspective id="persp1" near="0.1" far="500" angle="0.5">
+      <from x="4" y="1" z="7" />
+      <to x="0" y="1" z="0" />
+    </perspective>
+  </views>
+  <illumination doublesided="0" local="0">
+    <ambient r="0" g="0" b="0" a="0" />
+    <background r="0" g="0" b="0" a="1" />
+  </illumination>
+  <lights>
+    <omni id="omni1" enabled="1">
+      <location x="0" y="30" z="30" w="1" />
+      <ambient r="1" g="1" b="1" a="1" />
+      <diffuse r="1" g="1" b="1" a="1" />
+      <specular r="1" g="1" b="1" a="1" />
+    </omni>
+  </lights>
+  <textures>
+    <texture id="t_chessboard0" file="/../res/img/image02.jpg" length_s="1" length_t="1" />
+    <texture id="t_chessboard1" file="/../res/img/plastico.jpg" length_s="1" length_t="1" />
+    <texture id="t_chessboard2" file="/../res/img/sand.jpg" length_s="1" length_t="1" />
+  </textures>
+  <materials>
+    <material id="m_predefinido">
+      <emission r="0" g="0" b="0" a="0" />
+      <ambient r=".2" g=".2" b=".2" a="1" />
+      <diffuse r=".6" g=".6" b=".6" a="1" />
+      <specular r="0" g="0" b="0" a="1" />
+      <shininess value="1" />
+    </material>
+  </materials>
+  <transformations>
+  </transformations>
+  <primitives>
+    <primitive id="chessboard0">
+      <chessboard du="5" dv="5" textureref="t_chessboard0" su="3" sv="3">
+        <c1 r="0" g="0" b="1" a="1" />
+        <c2 r="0" g="1" b="0" a="1" />
+        <cs r="1" g="0" b="0" a="1" />
+      </chessboard>
+    </primitive>
+    <primitive id="chessboard1">
+      <chessboard du="10" dv="10" textureref="t_chessboard1" su="5" sv="5">
+        <c1 r="1" g="1" b="1" a="1" />
+        <c2 r="0" g="1" b="1" a="1" />
+        <cs r="1" g="0" b="1" a="1" />
+      </chessboard>
+    </primitive>
+    <primitive id="chessboard2">
+      <chessboard du="7" dv="7" textureref="t_chessboard2" su="0" sv="0">
+        <c1 r="0" g="0" b="0" a="1" />
+        <c2 r="1" g="1" b="1" a="1" />
+        <cs r=".6" g=".6" b=".6" a="1" />
+      </chessboard>
+    </primitive>
+
+  </primitives>
+  <components>
+    <component id="root">
+      <transformation>
+      </transformation>
+      <materials>
+        <material id="m_predefinido" />
+      </materials>
+      <texture id="none" />
+      <children>
+        <componentref id="chessboard0"/>
+        <componentref id="chessboard1"/>
+        <componentref id="chessboard2"/>
+      </children>
+    </component>
+    <component id="chessboard2">
+      <transformation>
+        <translate x="2" y ="0" z="0"/>
+      </transformation>
+      <materials>
+        <material id="m_predefinido" />
+      </materials>
+      <texture id="none" />
+      <children>
+        <primitiveref id="chessboard2"/>
+      </children>
+    </component>
+    <component id="chessboard0">
+      <transformation>
+        <translate x="-2" y ="0" z="0"/>
+      </transformation>
+      <materials>
+        <material id="m_predefinido" />
+      </materials>
+      <texture id="none" />
+      <children>
+        <primitiveref id="chessboard0"/>
+      </children>
+    </component>
+    <component id="chessboard1">
+      <transformation>
+        <translate x="0" y ="2" z="0"/>
+      </transformation>
+      <materials>
+        <material id="m_predefinido" />
+      </materials>
+      <texture id="none" />
+      <children>
+        <primitiveref id="chessboard1"/>
+      </children>
+    </component>
+  </components>
+  <animations>
+  </animations>
+</dsx>
