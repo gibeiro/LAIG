@@ -37,7 +37,7 @@ main=function()
     app.setScene(myScene);
     app.setInterface(myInterface);
     myInterface.setActiveCamera(myScene.camera);
-    var filename = getUrlVars()['file'] || "../res/dsx/chessboards.dsx";
+    var filename = getUrlVars()['file'] || "../res/dsx/test.dsx";
     var mySceneGraph = new graph(filename, myScene);
     app.run();
 }
