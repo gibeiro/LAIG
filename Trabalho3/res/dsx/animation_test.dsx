@@ -1,0 +1,111 @@
+<dsx>
+  <scene root="root" axis_length="0" />
+  <views default="presp1">
+    <perspective id="persp1" near="0.1" far="500" angle="0.4">
+      <from x="15" y="15" z="15" />
+      <to x="0" y="0" z="0" />
+    </perspective>
+    <perspective id="persp2" near="0.1" far="500" angle="0.4">
+      <from x="15" y="0" z="15" />
+      <to x="0" y="0" z="0" />
+    </perspective>
+    <perspective id="persp3" near="0.1" far="500" angle="0.4">
+      <from x="-4" y="5" z="15" />
+      <to x="0" y="0" z="0" />
+    </perspective>
+  </views>
+  <illumination doublesided="0" local="0">
+    <ambient r="0" g="0" b="0" a="0" />
+    <background r="0" g="0" b="0" a="0" />
+  </illumination>
+  <lights>
+    <omni id="omni1" enabled="1">
+      <location x="0" y="30" z="30" w="1" />
+      <ambient r="1" g="1" b="1" a="1" />
+      <diffuse r="1" g="1" b="1" a="1" />
+      <specular r="1" g="1" b="1" a="1" />
+    </omni>
+  </lights>
+  <textures>
+  </textures>
+  <materials>
+    <material id="m_predefinido">
+      <emission r="0" g="0" b="0" a="0" />
+      <ambient r=".2" g=".2" b=".2" a="1" />
+      <diffuse r=".6" g=".6" b=".6" a="1" />
+      <specular r="0" g="0" b="0" a="1" />
+      <shininess value="1" />
+    </material>
+  </materials>
+  <transformations>
+  </transformations>
+  <primitives>
+    <primitive id="toroide">
+      <torus inner=".5" outer="1" slices="25" loops="25" />
+    </primitive>
+    <primitive id="triangulo">
+      <triangle x1="2" y1="0" z1="0" x2="0" y2="0" z2="-0.5" x3="0" y3="0" z3="0.5"/>
+    </primitive>
+  </primitives>
+  <components>
+    <component id="root">
+      <transformation>
+      </transformation>
+      <materials>
+        <material id="m_predefinido" />
+      </materials>
+      <texture id="none" />
+      <children>
+        <!--<componentref id="circular" />-->
+        <componentref id="linear" />
+      </children>
+    </component>
+    <!--
+    <component id="circular">
+    <transformation>
+  </transformation>
+  <materials>
+  <material id="inherit" />
+</materials>
+<texture id="inherit" />
+<children>
+<primitiveref id="toroide" />
+</children>
+<animation>
+<animationref id="circular"/>
+</animation>
+</component>
+-->
+<component id="linear">
+  <transformation>
+  <rotate axis="y" angle="30"/>
+  </transformation>
+  <materials>
+    <material id="inherit" />
+  </materials>
+  <texture id="inherit" />
+  <children>
+    <primitiveref id="triangulo" />
+  </children>
+  <animation>
+    <animationref id="circular"/>
+    <!--<animationref id="linear"/>-->
+  </animation>
+</component>
+</components>
+<!-- novo bloco de animacao -->
+<animations>
+  <!-- podem existir zero ou mais nós "animation" -->
+  <!-- span é o tempo, em segundos, que a animação deve -->
+  <!-- demorar. Nesta versão do formato DSX, type pode ter -->
+  <!-- o valor "linear" ou "circular"; na animacao circular -->
+  <!-- os angulos sao expressos em graus  -->
+  <animation id="linear" span="4" type="linear">
+    <controlpoint xx="0" yy="0" zz="0" />
+    <controlpoint xx="2" yy="0" zz="2" />
+    <controlpoint xx="2" yy="0" zz="5" />
+    <controlpoint xx="0" yy="0" zz="7" />
+  </animation>
+  <animation id="circular" span="5" type="circular" center="0 0 0" radius="5" startang="0" rotang="360" />
+</animations>
+</dsx>
