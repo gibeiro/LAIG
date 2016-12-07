@@ -44,7 +44,7 @@ graph.prototype.validateOrder = function (rootElement) {
 	var nodes = rootElement.childNodes;
 	var types = [];
 	var names = ['scene', 'views', 'illumination', 'lights', 'textures',
-	'materials', 'transformations', 'primitives', 'components'];
+	'materials', 'transformations', 'primitives', 'components', 'animations'];
 
 	for (var i = 0; i < nodes.length; i++) {
 		if (nodes[i].nodeType == 1) {
@@ -53,7 +53,7 @@ graph.prototype.validateOrder = function (rootElement) {
 		}
 	}
 
-	if (types.length < 9) {
+	if (types.length < names.length) {
 		// Missing nodes, checking which ones are missing
 		var missingNodes = [];
 		for (var name = 0; name < names.length; name++) {
@@ -65,16 +65,16 @@ graph.prototype.validateOrder = function (rootElement) {
 					break;
 				}
 			}
-			if (!found) {
+			if (!found)
 				missingNodes.push([names[name]]);
-			}
+
 		}
 		var errorText = "XML is missing the following nodes:\n";
 		for (var i = 0; i < missingNodes.length; i++)
 		errorText += "\t" + missingNodes[i] + ";\n";
 		this.onXMLError(errorText + "Aborting!");
 		return false;
-	} else if (types.length > 9)
+	} else if (types.length > names.length)
 	console.warn("Unexpected number of nodes, trying to parse anyway");
 
 
@@ -453,6 +453,15 @@ graph.prototype.parsePrimitives = function (rootElement) {
 		var primitive = primitives[i].children[0];
 
 		switch(primitive.tagName){
+			case "piece":
+			var piece = {};
+			piece.id = id;
+			piece.type = "piece";
+			piece.directions = [];
+			piece.directions = this.reader.getRGBA(primitive, 'directions', true);
+			this.primitives.push(piece);
+			break;
+
 			case "chessboard":
 			var chessboard = {};
 			chessboard.id = id;
@@ -980,6 +989,13 @@ graph.prototype.parseNode = function (componentsList, component, parentNode) {
 	graph.prototype.generatePrimitive = function (primitiveInfo, length_s, length_t) {
 
 		switch(primitiveInfo.type){
+			case "piece":
+			return new piece(
+				this.scene,
+				primitiveInfo.directions,
+				length_s,
+				length_t
+			);
 			case "chessboard":
 			return new chessboard(
 				this.scene,

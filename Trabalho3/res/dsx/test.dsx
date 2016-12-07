@@ -1,15 +1,15 @@
 <dsx>
-  <scene root="root" axis_length="5" />
-  <views default="opersp1">
-    <perspective id="persp1" near="0.1" far="500" angle="0.4">
-      <from x="15" y="15" z="15" />
-      <to x="0" y="0" z="0" />
-    </perspective>
+
+  <scene root="root" axis_length="0" />
+
+  <views default="wew">
   </views>
+
   <illumination doublesided="0" local="0">
     <ambient r="0" g="0" b="0" a="1" />
     <background r="0" g="0" b="0" a="1" />
   </illumination>
+
   <lights>
     <omni id="omni1" enabled="1">
       <location x="0" y="30" z="30" w="1" />
@@ -18,8 +18,10 @@
       <specular r="1" g="1" b="1" a="1" />
     </omni>
   </lights>
+
   <textures>
   </textures>
+
   <materials>
     <material id="m_predefinido">
       <emission r="0" g="0" b="0" a="0" />
@@ -27,15 +29,18 @@
       <diffuse r=".6" g=".6" b=".6" a="1" />
       <specular r="0" g="0" b="0" a="1" />
       <shininess value="1" />
-    </material<name />
+    </material>
   </materials>
+
   <transformations>
   </transformations>
+
   <primitives>
     <primitive id="piece">
-      <sphere directions="N S E W"/>
+      <piece directions="0 4 2 -1"/>
     </primitive>
   </primitives>
+
   <components>
     <component id="root">
       <transformation>
@@ -45,36 +50,12 @@
       </materials>
       <texture id="none" />
       <children>
-        <componentref id="test" />
-      </children>
-    </component>
-    <component id="test">
-      <transformation>
-      </transformation>
-      <materials>
-        <material id="m_predefinido" />
-      </materials>
-      <texture id="none" />
-      <children>
-        <primitiveref id="piece" />
+        <primitiveref id="piece"/>
       </children>
     </component>
   </components>
+
   <animations>
-    <animation id="linear0" span="3" type="linear">
-      <controlpoint xx="-3" yy="0" zz="2" />
-      <controlpoint xx="3" yy="0" zz="2" />
-    </animation>
-    <animation id="circular0" span="2" type="circular" center="3 0 0" radius="2" startang="90" rotang="-180" />
-    <animation id="linear1" span="3" type="linear">
-      <controlpoint xx="3" yy="0" zz="-2" />
-      <controlpoint xx="-3" yy="0" zz="-2" />
-    </animation>
-    <animation id="circular1" span="2" type="circular" center="-3 0 0" radius="2" startang="-90" rotang="-180" />
-    <animation id="linear2" span="3" type="linear">
-      <controlpoint xx="-3" yy="0" zz="2" />
-      <controlpoint xx="0" yy="0" zz="2" />
-      <controlpoint xx="0" yy="0" zz="0" />
-    </animation>
   </animations>
+
 </dsx>

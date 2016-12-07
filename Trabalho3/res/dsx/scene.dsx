@@ -14,9 +14,9 @@
       <to x="0" y="0" z="0" />
     </perspective>
   </views>
-  <illumination doublesided="0" local="1">
-    <ambient r="0.2" g="0.2" b="0.2" a="0" />
-    <background r="0.8" g=".8" b="1" a="0" />
+  <illumination doublesided="0" local="0">
+    <ambient r="0" g="0" b="0" a="0" />
+    <background r="0" g="0" b="0" a="0" />
   </illumination>
   <lights>
     <omni id="omni1" enabled="1">
@@ -27,44 +27,8 @@
     </omni>
   </lights>
   <textures>
-    <texture id="t_plastico" file="/../res/img/plastico.jpg" length_s=".5" length_t=".1" />
-    <texture id="t_boia" file="/../res/img/boia.jpg" length_s="1" length_t="1" />
-    <texture id="t_bola" file="/../res/img/bola.jpg" length_s="1" length_t="1" />
-    <texture id="t_textil" file="/../res/img/textil.jpg" length_s=".8" length_t="1" />
-    <texture id="t_metal" file="/../res/img/metal.jpg" length_s="1" length_t="1" />
-    <texture id="t_palha" file="/../res/img/palha.jpg" length_s="1" length_t="1" />
-    <texture id="t_areia" file="/../res/img/sand.jpg" length_s="1" length_t="1" />
-    <texture id="t_madeira" file="/../res/img/madeira.jpg" length_s="10" length_t="1" />
-    <texture id="t_sb1" file="/../res/img/sb1.png" length_s="1" length_t="1" />
-    <texture id="t_sb2" file="/../res/img/sb2.png" length_s="1" length_t="1" />
-    <texture id="t_sb3" file="/../res/img/sb3.png" length_s="1" length_t="1" />
-    <texture id="t_sb4" file="/../res/img/sb4.png" length_s="1" length_t="1" />
-    <texture id="t_sb5" file="/../res/img/sb5.png" length_s="1" length_t="1" />
-    <texture id="t_sb6" file="/../res/img/sb6.png" length_s="1" length_t="1" />
-    <texture id="t_toalha" file="/../res/img/toalha.jpg" length_s="1" length_t="1" />
   </textures>
   <materials>
-    <material id="m_textil">
-      <emission r="0" g="0" b="0" a="1" />
-      <ambient r="0.2" g="0.2" b="0.18" a="1" />
-      <diffuse r="1" g="1" b=".94" a="1" />
-      <specular r="0" g="0" b="0" a="1" />
-      <shininess value="1" />
-    </material>
-    <material id="m_boia">
-      <emission r="0" g="0" b="0" a="1" />
-      <ambient r="0.4" g="0.4" b="0.4" a="1" />
-      <diffuse r=".8" g=".8" b=".8" a="1" />
-      <specular r="1" g="1" b="1" a="1" />
-      <shininess value="50" />
-    </material>
-    <material id="m_bola">
-      <emission r="0" g="0" b="0" a="1" />
-      <ambient r="0.4" g="0.4" b="0.4" a="1" />
-      <diffuse r=".8" g=".8" b=".8" a="1" />
-      <specular r="1" g="1" b="1" a="1" />
-      <shininess value="50" />
-    </material>
     <material id="m_predefinido">
       <emission r="0" g="0" b="0" a="0" />
       <ambient r=".2" g=".2" b=".2" a="1" />
@@ -72,69 +36,15 @@
       <specular r="0" g="0" b="0" a="1" />
       <shininess value="1" />
     </material>
-    <material id="m_madeira">
-      <emission r="0" g="0" b="0" a="0" />
-      <ambient r="0.3" g="0.3" b="0.3" a="1" />
-      <diffuse r="1" g="1" b="1" a="1" />
-      <specular r="0" g="0" b="0" a="1" />
-      <shininess value="5" />
-    </material>
-    <material id="m_palha">
-      <emission r="0" g="0" b="0" a="1" />
-      <ambient r=".8" g=".8" b=".8" a="1" />
-      <diffuse r="1" g="1" b="1" a="1" />
-      <specular r="0" g="0" b="0" a="1" />
-      <shininess value="1" />
-    </material>
-    <material id="m_areia">
-      <emission r="0.76" g="0.7" b="0.5" a="0" />
-      <ambient r="0.76" g="0.7" b="0.5" a="1" />
-      <diffuse r="0" g="0" b="0" a="1" />
-      <specular r="0" g="0" b="0" a="1" />
-      <shininess value="0" />
-    </material>
-    <material id="m_metal">
-      <emission r="0.1" g="0.1" b="0.1" a="1" />
-      <ambient r=".2" g=".2" b=".2" a="1" />
-      <diffuse r=".8" g=".8" b=".8" a="1" />
-      <specular r="1" g="1" b="1" a="1" />
-      <shininess value="1" />
-    </material>
-    <material id="m_toalha">
-      <emission r="0" g="0" b="0" a="1" />
-      <ambient r=".6" g="0.6" b="0.6" a="1" />
-      <diffuse r=".8" g=".8" b=".8" a="1" />
-      <specular r="0" g="0" b="0" a="1" />
-      <shininess value="0" />
-    </material>
-    <material id="m_skybox">
-      <emission r="1" g="1" b="1" a="1" />
-      <ambient r="0" g="0" b="0" a="0" />
-      <diffuse r="0" g="0" b="0" a="0" />
-      <specular r="0" g="0" b="0" a="0" />
-      <shininess value="0" />
-    </material>
   </materials>
   <transformations>
   </transformations>
   <primitives>
-	 <primitive id="triangulo">
-      <triangle x1="-0.5" y1="-0.5" z1="-0.5" x2="0.5" y2="0.5" z2="0.5" x3="0" y3="0" z3="0"/>
-    </primitive>
     <primitive id="toroide">
       <torus inner=".5" outer="1" slices="25" loops="25" />
     </primitive>
-    <primitive id="esfera">
-      <sphere radius="1" slices="25" stacks="25" />
-    </primitive>
-    <primitive id="cone">
-      <cylinder base="1" top="0" height="1" slices="15" stacks="10" />
-    </primitive>
-    <primitive id="cilindro">
-      <cylinder base="1" top="1" height="1" slices="15" stacks="5" />
-    </primitive>
-    <primitive id="rectangulo">
-      <rectangle x1="-0.5" y1="-0.5" x2="0.5" y2="0.5" />
+    <primitive id="triangulo">
+      <triangle x1="2" y1="0" z1="0" x2="0" y2="0" z2="-0.5" x3="0" y3="0" z3="0.5"/>
     </primitive>
   </primitives>
   <components>
@@ -146,524 +56,166 @@
       </materials>
       <texture id="none" />
       <children>
-        <componentref id="toalha" />
-        <componentref id="cadeira" />
-        <componentref id="guarda_sol" />
-        <componentref id="skybox" />
-        <componentref id="areal" />
-        <componentref id="bola" />
-        <componentref id="boia" />
-	<!--<componentref id="test">-->
-      </children>
-<!--
-    </component>
-	<component id="test">
-      <transformation>
-        <scale x="10" y="10" z=10"/>
-      </transformation>
-      <materials>
-        <material id="m_predefinido" />
-      </materials>
-      <texture id="t_boia" />
-      <children>
-        <primitiveref id="triangulo" />
+        <!--<componentref id="circular" />-->
+        <componentref id="linear" />
       </children>
     </component>
+    <!--
+    <component id="circular">
+    <transformation>
+  </transformation>
+  <materials>
+  <material id="inherit" />
+</materials>
+<texture id="inherit" />
+<children>
+<primitiveref id="toroide" />
+</children>
+<animation>
+<animationref id="circular"/>
+</animation>
+</component>
 -->
-    <component id="boia">
-      <transformation>
-        <translate x="5" y="3" z="13"/>
-        <scale x="3" y="3" z="3"/>
-        <rotate axis="y" angle="35"/>
-        <rotate axis="x" angle="-25"/>
-      </transformation>
-      <materials>
-        <material id="m_boia" />
-      </materials>
-      <texture id="t_boia" />
-      <children>
-        <primitiveref id="toroide" />
-      </children>
-    </component>
-
-    <component id="bola">
-      <transformation>
-        <translate x="-2" y="6.2" z="8"/>
-        <rotate axis="x" angle="35"/>
-        <rotate axis="y" angle="60"/>
-        <scale x="2" y="2" z="2"/>
-      </transformation>
-      <materials>
-        <material id="m_bola" />
-      </materials>
-      <texture id="t_bola" />
-      <children>
-        <primitiveref id="esfera" />
-      </children>
-    </component>
-
-    <component id="cadeira">
-      <transformation>
-        <translate x="-4" y="0" z="8"/>
-      </transformation>
-      <materials>
-        <material id="m_predefinido" />
-      </materials>
-      <texture id="none" />
-      <children>
-        <componentref id="tampo" />
-        <componentref id="pernas" />
-      </children>
-    </component>
-
-    <component id="tampo">
-      <transformation>
-      </transformation>
-      <materials>
-        <material id="m_textil" />
-      </materials>
-      <texture id="t_textil" />
-      <children>
-        <componentref id="tampo1" />
-        <componentref id="tampo2" />
-        <componentref id="tampo3" />
-      </children>
-    </component>
-
-    <component id="tampo1">
-      <transformation>
-        <translate x="0" y="4" z="0" />
-        <scale x="10" y="1" z="8" />
-      </transformation>
-      <materials>
-        <material id="m_textil" />
-      </materials>
-      <texture id="inherit" />
-      <children>
-        <componentref id="cubo" />
-      </children>
-    </component>
-
-    <component id="tampo2">
-      <transformation>
-        <translate x="-6.8" y="2" z="0" />
-        <rotate axis="z" angle="45" />
-        <scale x="6" y="1" z="8" />
-      </transformation>
-      <materials>
-        <material id="m_textil" />
-      </materials>
-      <texture id="inherit" />
-      <children>
-        <componentref id="cubo" />
-      </children>
-    </component>
-
-    <component id="tampo3">
-      <transformation>
-        <translate x="7.2" y="5.6" z="0" />
-        <rotate axis="z" angle="35" />
-        <scale x="6" y="1" z="8" />
-      </transformation>
-      <materials>
-        <material id="m_textil" />
-      </materials>
-      <texture id="inherit" />
-      <children>
-        <componentref id="cubo" />
-      </children>
-    </component>
-
-    <component id="pernas">
-      <transformation>
-        <translate x="4" y="0" z="0"/>
-      </transformation>
-      <materials>
-        <material id="m_metal" />
-      </materials>
-      <texture id="t_metal" />
-      <children>
-        <componentref id="perna1" />
-        <componentref id="perna2" />
-        <componentref id="perna3" />
-        <componentref id="perna4" />
-        <componentref id="perna5" />
-        <componentref id="perna6" />
-      </children>
-    </component>
-
-    <component id="perna1">
-      <transformation>
-        <translate x="-8" y="0" z="3" />
-        <scale x=".4" y="4" z=".4" />
-        <rotate axis="x" angle="-90"/>
-      </transformation>
-      <materials>
-        <material id="m_metal" />
-      </materials>
-      <texture id="t_metal" />
-      <children>
-        <primitiveref id="cilindro" />
-      </children>
-    </component>
-
-    <component id="perna2">
-      <transformation>
-        <translate x="-8" y="0" z="-3" />
-        <scale x=".4" y="4" z=".4" />
-        <rotate axis="x" angle="-90"/>
-      </transformation>
-      <materials>
-        <material id="m_metal" />
-      </materials>
-      <texture id="t_metal" />
-      <children>
-        <primitiveref id="cilindro" />
-      </children>
-    </component>
-
-    <component id="perna3">
-      <transformation>
-        <translate x="1" y="0" z="-3" />
-        <scale x=".4" y="4" z=".4" />
-        <rotate axis="x" angle="-90"/>
-      </transformation>
-      <materials>
-        <material id="m_metal" />
-      </materials>
-      <texture id="t_metal" />
-      <children>
-        <primitiveref id="cilindro" />
-      </children>
-    </component>
-
-    <component id="perna4">
-      <transformation>
-        <translate x="1" y="0" z="3" />
-        <scale x=".4" y="4" z=".4" />
-        <rotate axis="x" angle="-90"/>
-      </transformation>
-      <materials>
-        <material id="m_metal" />
-      </materials>
-      <texture id="t_metal" />
-      <children>
-        <primitiveref id="cilindro" />
-      </children>
-    </component>
-
-    <component id="perna5">
-      <transformation>
-        <translate x="4.5" y="0" z="3" />
-        <scale x=".4" y="6.8" z=".4" />
-        <rotate axis="x" angle="-90"/>
-      </transformation>
-      <materials>
-        <material id="m_metal" />
-      </materials>
-      <texture id="t_metal" />
-      <children>
-        <primitiveref id="cilindro" />
-      </children>
-    </component>
-
-    <component id="perna6">
-      <transformation>
-        <translate x="4.5" y="0" z="-3" />
-        <scale x=".4" y="6.8" z=".4" />
-        <rotate axis="x" angle="-90"/>
-      </transformation>
-      <materials>
-        <material id="m_metal" />
-      </materials>
-      <texture id="t_metal" />
-      <children>
-        <primitiveref id="cilindro" />
-      </children>
-    </component>
-
-    <component id="guarda_sol">
-      <transformation>
-      </transformation>
-      <materials>
-        <material id="m_predefinido" />
-      </materials>
-      <texture id="none" />
-      <children>
-        <componentref id="sombreiro" />
-        <componentref id="vara" />
-      </children>
-    </component>
-
-    <component id="sombreiro">
-      <transformation>
-        <translate x="0" y="15" z="0"/>
-        <scale x="10" y="5.5" z="10"/>
-        <rotate axis="x" angle="-90"/>
-      </transformation>
-      <materials>
-        <material id="m_palha" />
-      </materials>
-      <texture id="t_palha" />
-      <children>
-        <primitiveref id="cone"/>
-      </children>
-    </component>
-
-    <component id="vara">
-      <transformation>
-        <scale x="0.3" y="19.8" z="0.3"/>
-        <rotate axis="x" angle="-90"/>
-      </transformation>
-      <materials>
-        <material id="m_madeira" />
-      </materials>
-      <texture id="t_madeira" />
-      <children>
-        <primitiveref id="cilindro"/>
-      </children>
-    </component>
-
-    <component id="skybox">
-      <transformation>
-      </transformation>
-      <materials>
-        <material id="m_skybox" />
-      </materials>
-      <texture id="none" />
-      <children>
-        <componentref id="sb1" />
-        <componentref id="sb2" />
-        <componentref id="sb3" />
-        <componentref id="sb4" />
-        <componentref id="sb5" />
-        <componentref id="sb6" />
-      </children>
-    </component>
-    <component id="sb1">
-      <transformation>
-        <translate x="0" y="0" z="-100" />
-        <rotate axis="z" angle="180" />
-        <scale x="200" y="200" z="1" />
-      </transformation>
-      <materials>
-        <material id="m_skybox" />
-      </materials>
-      <texture id="t_sb1" />
-      <children>
-        <primitiveref id="rectangulo" />
-      </children>
-    </component>
-    <component id="sb2">
-      <transformation>
-        <translate x="100" y="0" z="0" />
-        <rotate axis="x" angle="180" />
-        <rotate axis="y" angle="-90" />
-        <scale x="200" y="200" z="1" />
-      </transformation>
-      <materials>
-        <material id="m_skybox" />
-      </materials>
-      <texture id="t_sb2" />
-      <children>
-        <primitiveref id="rectangulo" />
-      </children>
-    </component>
-    <component id="sb3">
-      <transformation>
-        <translate x="0" y="0" z="100" />
-        <rotate axis="z" angle="180" />
-        <rotate axis="y" angle="180" />
-        <scale x="200" y="200" z="1" />
-      </transformation>
-      <materials>
-        <material id="m_skybox" />
-      </materials>
-      <texture id="t_sb3" />
-      <children>
-        <primitiveref id="rectangulo" />
-      </children>
-    </component>
-    <component id="sb4">
-      <transformation>
-        <translate x="-100" y="0" z="0" />
-        <rotate axis="x" angle="180" />
-        <rotate axis="y" angle="90" />
-        <scale x="200" y="200" z="1" />
-      </transformation>
-      <materials>
-        <material id="m_skybox" />
-      </materials>
-      <texture id="t_sb4" />
-      <children>
-        <primitiveref id="rectangulo" />
-      </children>
-    </component>
-    <component id="sb5">
-      <transformation>
-        <translate x="0" y="100" z="0" />
-        <rotate axis="y" angle="-90" />
-        <rotate axis="x" angle="90" />
-        <scale x="200" y="200" z="1" />
-      </transformation>
-      <materials>
-        <material id="m_skybox" />
-      </materials>
-      <texture id="t_sb5" />
-      <children>
-        <primitiveref id="rectangulo" />
-      </children>
-    </component>
-    <component id="sb6">
-      <transformation>
-        <translate x="0" y="-100" z="0" />
-        <rotate axis="y" angle="-90" />
-        <rotate axis="x" angle="-90" />
-        <scale x="200" y="200" z="1" />
-      </transformation>
-      <materials>
-        <material id="m_skybox" />
-      </materials>
-      <texture id="t_sb6" />
-      <children>
-        <primitiveref id="rectangulo" />
-      </children>
-    </component>
-    <component id="areal">
-      <transformation>
-        <scale x="150" y="1" z="150" />
-        <rotate axis="x" angle="-90"/>
-      </transformation>
-      <materials>
-        <material id="m_areia" />
-      </materials>
-      <texture id="t_areia" />
-      <children>
-        <primitiveref id="rectangulo" />
-      </children>
-    </component>
-    <component id="cubo">
-      <transformation>
-      </transformation>
-      <materials>
-        <material id="m_textil" />
-      </materials>
-      <texture id="inherit" />
-      <children>
-        <componentref id="lado1"/>
-        <componentref id="lado2"/>
-        <componentref id="lado3"/>
-        <componentref id="lado4"/>
-        <componentref id="lado5"/>
-        <componentref id="lado6"/>
-      </children>
-    </component>
-
-    <component id="lado1">
-      <transformation>
-        <translate x="0" y="0.5" z="0"/>
-        <rotate axis="x" angle="-90"/>
-      </transformation>
-      <materials>
-        <material id="m_textil" />
-      </materials>
-      <texture id="inherit" />
-      <children>
-        <primitiveref id="rectangulo"/>
-      </children>
-    </component>
-    <component id="lado2">
-      <transformation>
-        <translate x="0" y="-0.5" z="0"/>
-        <rotate axis="x" angle="90"/>
-      </transformation>
-      <materials>
-        <material id="m_textil" />
-      </materials>
-      <texture id="inherit" />
-      <children>
-        <primitiveref id="rectangulo"/>
-      </children>
-    </component>
-    <component id="lado3">
-      <transformation>
-        <translate x="0" y="0" z="0.5"/>
-      </transformation>
-      <materials>
-        <material id="m_textil" />
-      </materials>
-      <texture id="inherit" />
-      <children>
-        <primitiveref id="rectangulo"/>
-      </children>
-    </component>
-    <component id="lado4">
-      <transformation>
-        <translate x="0" y="0" z="-0.5"/>
-        <rotate axis="y" angle="180"/>
-      </transformation>
-      <materials>
-        <material id="m_textil" />
-      </materials>
-      <texture id="inherit" />
-      <children>
-        <primitiveref id="rectangulo"/>
-      </children>
-    </component>
-    <component id="lado5">
-      <transformation>
-        <translate x="0.5" y="0" z="0"/>
-        <rotate axis="y" angle="90"/>
-      </transformation>
-      <materials>
-        <material id="m_textil" />
-      </materials>
-      <texture id="inherit" />
-      <children>
-        <primitiveref id="rectangulo"/>
-      </children>
-    </component>
-    <component id="lado6">
-      <transformation>
-        <translate x="-0.5" y="0" z="0"/>
-        <rotate axis="y" angle="-90"/>
-      </transformation>
-      <materials>
-        <material id="m_textil" />
-      </materials>
-      <texture id="inherit" />
-      <children>
-        <primitiveref id="rectangulo"/>
-      </children>
-    </component>
-
-    <component id="toalha">
-      <transformation>
-        <translate x="4" y=".2" z="-8"/>
-        <rotate axis="y" angle="-20"/>
-        <rotate axis="x" angle="-90"/>
-        <scale x="20" y="8" z="0"/>
-      </transformation>
-      <materials>
-        <material id="m_toalha" />
-      </materials>
-      <texture id="t_toalha" />
-      <children>
-        <primitiveref id="rectangulo" />
-      </children>
-    </component>
-  </components>
-  <!-- novo bloco de animacao -->
+<component id="linear">
+  <transformation>
+  <rotate axis="y" angle="30"/>
+  </transformation>
+  <materials>
+    <material id="inherit" />
+  </materials>
+  <texture id="inherit" />
+  <children>
+    <primitiveref id="triangulo" />
+  </children>
+  <animation>
+    <animationref id="circular"/>
+    <!--<animationref id="linear"/>-->
+  </animation>
+</component>
+</components>
+<!-- novo bloco de animacao -->
 <animations>
-    <!-- podem existir zero ou mais nós "animation" -->
-    <!-- span é o tempo, em segundos, que a animação deve -->
-    <!-- demorar. Nesta versão do formato DSX, type pode ter -->
-    <!-- o valor "linear" ou "circular"; na animacao circular -->
-    <!-- os angulos sao expressos em graus  -->
-    <animation id="ss" span="ff" type="linear">
-        <controlpoint xx="ff" yy="ff" zz="ff />
-    </animation>
-    <animation id="ss" span="ff" type="circular" center="ff ff ff"
-               radius="ff" startang="ff" rotang="ff" />
+  <!-- podem existir zero ou mais nós "animation" -->
+  <!-- span é o tempo, em segundos, que a animação deve -->
+  <!-- demorar. Nesta versão do formato DSX, type pode ter -->
+  <!-- o valor "linear" ou "circular"; na animacao circular -->
+  <!-- os angulos sao expressos em graus  -->
+  <animation id="linear" span="4" type="linear">
+    <controlpoint xx="0" yy="0" zz="0" />
+    <controlpoint xx="2" yy="0" zz="2" />
+    <controlpoint xx="2" yy="0" zz="5" />
+    <controlpoint xx="0" yy="0" zz="7" />
+  </animation>
+  <animation id="circular" span="5" type="circular" center="0 0 0" radius="5" startang="0" rotang="360" />
+</animations>
+</dsx><dsx>
+  <scene root="root" axis_length="0" />
+  <views default="presp1">
+    <perspective id="persp1" near="0.1" far="500" angle="0.4">
+      <from x="15" y="15" z="15" />
+      <to x="0" y="0" z="0" />
+    </perspective>
+    <perspective id="persp2" near="0.1" far="500" angle="0.4">
+      <from x="15" y="0" z="15" />
+      <to x="0" y="0" z="0" />
+    </perspective>
+    <perspective id="persp3" near="0.1" far="500" angle="0.4">
+      <from x="-4" y="5" z="15" />
+      <to x="0" y="0" z="0" />
+    </perspective>
+  </views>
+  <illumination doublesided="0" local="0">
+    <ambient r="0" g="0" b="0" a="0" />
+    <background r="0" g="0" b="0" a="0" />
+  </illumination>
+  <lights>
+    <omni id="omni1" enabled="1">
+      <location x="0" y="30" z="30" w="1" />
+      <ambient r="1" g="1" b="1" a="1" />
+      <diffuse r="1" g="1" b="1" a="1" />
+      <specular r="1" g="1" b="1" a="1" />
+    </omni>
+  </lights>
+  <textures>
+  </textures>
+  <materials>
+    <material id="m_predefinido">
+      <emission r="0" g="0" b="0" a="0" />
+      <ambient r=".2" g=".2" b=".2" a="1" />
+      <diffuse r=".6" g=".6" b=".6" a="1" />
+      <specular r="0" g="0" b="0" a="1" />
+      <shininess value="1" />
+    </material>
+  </materials>
+  <transformations>
+  </transformations>
+  <primitives>
+    <primitive id="toroide">
+      <torus inner=".5" outer="1" slices="25" loops="25" />
+    </primitive>
+    <primitive id="triangulo">
+      <triangle x1="2" y1="0" z1="0" x2="0" y2="0" z2="-0.5" x3="0" y3="0" z3="0.5"/>
+    </primitive>
+  </primitives>
+  <components>
+    <component id="root">
+      <transformation>
+      </transformation>
+      <materials>
+        <material id="m_predefinido" />
+      </materials>
+      <texture id="none" />
+      <children>
+        <!--<componentref id="circular" />-->
+        <componentref id="linear" />
+      </children>
+    </component>
+    <!--
+    <component id="circular">
+    <transformation>
+  </transformation>
+  <materials>
+  <material id="inherit" />
+</materials>
+<texture id="inherit" />
+<children>
+<primitiveref id="toroide" />
+</children>
+<animation>
+<animationref id="circular"/>
+</animation>
+</component>
+-->
+<component id="linear">
+  <transformation>
+  <rotate axis="y" angle="30"/>
+  </transformation>
+  <materials>
+    <material id="inherit" />
+  </materials>
+  <texture id="inherit" />
+  <children>
+    <primitiveref id="triangulo" />
+  </children>
+  <animation>
+    <animationref id="circular"/>
+    <!--<animationref id="linear"/>-->
+  </animation>
+</component>
+</components>
+<!-- novo bloco de animacao -->
+<animations>
+  <!-- podem existir zero ou mais nós "animation" -->
+  <!-- span é o tempo, em segundos, que a animação deve -->
+  <!-- demorar. Nesta versão do formato DSX, type pode ter -->
+  <!-- o valor "linear" ou "circular"; na animacao circular -->
+  <!-- os angulos sao expressos em graus  -->
+  <animation id="linear" span="4" type="linear">
+    <controlpoint xx="0" yy="0" zz="0" />
+    <controlpoint xx="2" yy="0" zz="2" />
+    <controlpoint xx="2" yy="0" zz="5" />
+    <controlpoint xx="0" yy="0" zz="7" />
+  </animation>
+  <animation id="circular" span="5" type="circular" center="0 0 0" radius="5" startang="0" rotang="360" />
 </animations>
 </dsx>

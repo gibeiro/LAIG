@@ -1,12 +1,12 @@
-#define N   0
-#define NE  1
-#define E   2
-#define SE  3
-#define S   4
-#define SW  5
-#define W   6
-#define NW  7
-#define END	-1
+#define N   0.0
+#define NE  1.0
+#define E   2.0
+#define SE  3.0
+#define S   4.0
+#define SW  5.0
+#define W   6.0
+#define NW  7.0
+#define END	-1.0
 #define PI 3.1415926535897932384626433832795
 
 attribute vec3 aVertexPosition;
@@ -19,27 +19,46 @@ uniform mat4 uNMatrix;
 
 varying vec2 vTextureCoord;
 
-uniform int directions[4];
-
-float round(float val){
-	return floor(val+0.5);
-}
+uniform float a;
+uniform float b;
+uniform float c;
+uniform float d;
 
 void main() {
-	float angle = atan(aVertexPosition.z/aVertexPosition.x);
-	float delta = PI/8.0;
 
+	float vertex_direction;
+	if(aVertexPosition.x == 0.0 && aVertexPosition.z > 0.0)
+	vertex_direction = E;
+	else if(aVertexPosition.x == 0.0 && aVertexPosition.z < 0.0)
+	vertex_direction = W;
+	else if(aVertexPosition.z == 0.0 && aVertexPosition.x > 0.0)
+	vertex_direction = N;
+	else if(aVertexPosition.z == 0.0 && aVertexPosition.x < 0.0)
+	vertex_direction = S;
+	else if(aVertexPosition.z == aVertexPosition.x && aVertexPosition.z > 0.0)
+	vertex_direction = NE;
+	else if(aVertexPosition.z == aVertexPosition.x && aVertexPosition.z < 0.0)
+	vertex_direction = SW;
+	else if(aVertexPosition.z == -aVertexPosition.x && aVertexPosition.z > 0.0)
+	vertex_direction = SE;
+	else if(aVertexPosition.z == -aVertexPosition.x && aVertexPosition.z < 0.0)
+	vertex_direction = NW;
+	else
+	vertex_direction = END;
+
+	if(vertex_direction == END)
 	gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
 
-	for(int i = 0; i < directions.length(); i++){
-		if(directions[i] == END)
-			break;
-		if(angle == delta*directions[i]){
-			gl_Position =
-			uPMatrix *
-			uMVMatrix *
-			vec4(aVertexPosition + vec3(0.0,0.4,0.0), 1.0);
-			break;
-		}
+	else if(
+		vertex_direction == a ||
+		vertex_direction == b ||
+		vertex_direction == c ||
+		vertex_direction == d
+		)
+		gl_Position =
+		uPMatrix *
+		uMVMatrix *
+		vec4(aVertexPosition + vec3(0.0,1.0,0.0), 1.0);
+
+
 	}
-}
