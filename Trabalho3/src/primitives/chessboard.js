@@ -1,8 +1,13 @@
-function chessboard(scene,du,dv,texture,su,sv,c1,c2,cs) {
+function chessboard(scene,du,dv,textureref,su,sv,c1,c2,cs) {
   this.scene = scene;
   this.du = du;
   this.dv = dv;
-  this.texture = texture;
+  this.texture = null;
+  for(var i = 0; i < scene.graph.textures.length; i++)
+    if(scene.graph.textures[i].id == textureref){
+      this.texture = scene.graph.textures[i];
+      break;
+    }
   this.su = su;
   this.sv = sv;
   this.c1 = c1;
@@ -27,10 +32,18 @@ function chessboard(scene,du,dv,texture,su,sv,c1,c2,cs) {
 
 chessboard.prototype.constructor = chessboard;
 
+chessboard.prototype.set_highlighted_tile = function(su,sv){
+  this.shader.setUniformsValues({su: su});
+  this.shader.setUniformsValues({sv: sv});
+}
+
+
 chessboard.prototype.display = function(){
   this.scene.setActiveShader(this.shader);
+  if(this.texture != null)
   this.texture.bind();
   this.chessboard.display();
+  if(this.texture != null)
   this.texture.unbind();
   this.scene.setActiveShader(this.scene.defaultShader);
 }

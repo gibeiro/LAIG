@@ -453,6 +453,13 @@ graph.prototype.parsePrimitives = function (rootElement) {
 		var primitive = primitives[i].children[0];
 
 		switch(primitive.tagName){
+			case "game":
+			var game = {};
+			game.id = id;
+			game.type = "game";
+			this.primitives.push(game);
+			break;
+
 			case "piece":
 			var piece = {};
 			piece.id = id;
@@ -469,12 +476,6 @@ graph.prototype.parsePrimitives = function (rootElement) {
 			chessboard.du = this.reader.getInteger(primitive, 'du', true);
 			chessboard.dv = this.reader.getInteger(primitive, 'dv', true);
 			var textureref = this.reader.getString(primitive, 'textureref', true);
-			chessboard.texture = null;
-			for(var i = 0; i < this.textures.length; i++)
-				if(this.textures[i].id == textureref){
-					chessboard.texture = this.textures[i];
-					break;
-				}
 			chessboard.su = this.reader.getInteger(primitive, 'su', true);
 			chessboard.sv = this.reader.getInteger(primitive, 'sv', true);
 			chessboard.c1 = [];
@@ -989,6 +990,10 @@ graph.prototype.parseNode = function (componentsList, component, parentNode) {
 	graph.prototype.generatePrimitive = function (primitiveInfo, length_s, length_t) {
 
 		switch(primitiveInfo.type){
+			case "game":
+			return new game(
+				this.scene
+			);
 			case "piece":
 			return new piece(
 				this.scene,

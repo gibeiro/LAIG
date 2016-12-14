@@ -1,6 +1,6 @@
 <dsx>
 
-  <scene root="root" axis_length="0" />
+  <scene root="root" axis_length="3" />
 
   <views default="wew">
   </views>
@@ -20,6 +20,7 @@
   </lights>
 
   <textures>
+    <texture id="t_chessboard" file="/../res/img/image02.jpg" length_s="1" length_t="1" />
   </textures>
 
   <materials>
@@ -36,12 +37,13 @@
   </transformations>
 
   <primitives>
-    <primitive id="piece">
-      <piece directions="0 4 2 -1"/>
+    <primitive id="jogo">
+      <game/>
     </primitive>
   </primitives>
 
   <components>
+
     <component id="root">
       <transformation>
       </transformation>
@@ -50,9 +52,10 @@
       </materials>
       <texture id="none" />
       <children>
-        <primitiveref id="piece"/>
+        <primitiveref id="jogo"/>
       </children>
     </component>
+
   </components>
 
   <animations>
