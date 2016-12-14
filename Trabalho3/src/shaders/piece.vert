@@ -19,13 +19,9 @@ uniform mat4 uNMatrix;
 
 varying vec2 vTextureCoord;
 
-uniform float a;
-uniform float b;
-uniform float c;
-uniform float d;
-
 void main() {
-
+gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+/*
 	float vertex_direction;
 	if(aVertexPosition.x == 0.0 && aVertexPosition.z > 0.0)
 	vertex_direction = E;
@@ -59,6 +55,5 @@ void main() {
 		uPMatrix *
 		uMVMatrix *
 		vec4(aVertexPosition + vec3(0.0,1.0,0.0), 1.0);
-
-
+*/
 	}

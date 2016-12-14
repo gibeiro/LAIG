@@ -23,8 +23,12 @@ uniform lightProperties uLight[NUMBER_OF_LIGHTS];
 varying vec2 vTextureCoord;
 
 uniform sampler2D uSampler;
+
+uniform vec4 rgba;
+vec4
+
 void main() {
 
-gl_FragColor =  vec4(0.6,0.6,0.6,1.0);
+gl_FragColor = gl_FragColor + rgba;
 
 }
