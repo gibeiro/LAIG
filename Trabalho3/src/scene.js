@@ -282,8 +282,8 @@ scene.prototype.logPicking = function ()
 					var current_player = this.game.current_player();
 					if(current_player)
 					current_player.picking_play();
-					console.log('Picked ' + customId);
-					console.table(this.game.highlighted);
+					// console.log('Picked ' + customId);
+					// console.table(this.game.highlighted);
 					
 				}
 			}

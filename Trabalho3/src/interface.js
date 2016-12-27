@@ -51,10 +51,10 @@ interface.prototype.processKeyDown = function(event){
 			this.scene.game.undo();
 		break;
 		case 37:
-		this.scene.game.current_player().rotate_play(0);
+		this.scene.game.current_player().rotate_play(1);
 		break;
 		case 39:
-		this.scene.game.current_player().rotate_play(1);
+		this.scene.game.current_player().rotate_play(0);
 		break;
 	}
 }

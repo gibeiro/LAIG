@@ -233,7 +233,7 @@ function rotate_orientations(orientations,angle){
 	var compass = [n,ne,e,se,s,sw,w,nw];
 	
 	var increment;	
-	if(angle) increment = 1; else increment = compass.length-1;
+	if(!angle) increment = 1; else increment = compass.length-1;
 	
 	var index;	
 	for(var i = 0; i < directions.length; i++){
@@ -270,7 +270,7 @@ game.prototype.calc_highlights = function(){
 	for(var i = 0; i < picked_piece[1].length; i++){
 		var direction = translate_orientations([picked_piece[1][i]])[0];		
 		var displacement = picked_piece[1].length;
-		console.log('direction: '+direction);
+		// console.log('direction: '+direction);
 		if(displacement == 4) displacement = 1;
 		for(var j = 1; j < displacement + 1; j++){
 			
@@ -288,21 +288,21 @@ game.prototype.calc_highlights = function(){
 				dx *= 0;
 			
 			var end_coord = [coord[0]+dx,coord[1]+dy];
-			console.log('end coord: ' + end_coord.toString());
+			// console.log('end coord: ' + end_coord.toString());
 			if(
 				end_coord[0] < 0 || 
 				end_coord[1] < 0 || 
 				end_coord[0] > 8 ||
 				end_coord[1] > 8
-			) {console.log('discarded - out of boudaries');break;}
+			) {/*console.log('discarded - out of boudaries');*/break;}
 			
 			var end_piece = this.board[end_coord[0]][end_coord[1]];
 			
-			if(end_piece[0] == picked_piece[0]){console.log('discarded - collision with team'); break;}
+			if(end_piece[0] == picked_piece[0]){/*console.log('discarded - collision with team');*/ break;}
 			
 			this.highlighted.push(end_coord);
 			
-			if(end_piece[0] != 'empty'){console.log('collision with enemy');break;}			
+			if(end_piece[0] != 'empty'){/*console.log('collision with enemy');*/break;}			
 			
 		}
 	}
@@ -310,36 +310,36 @@ game.prototype.calc_highlights = function(){
 
 game.prototype.play = function(play){
 	
-	console.log('Adding play: ');
-	console.log(play);
-	console.log('Before: ');
-	this.debug_board();
+	// console.log('Adding play: ');
+	// console.log(play);
+	// console.log('Before: ');
+	// this.debug_board();
 	if(play.displacement === 0){//rotation
 		play.captured = null;
 		var piece = this.board[play.x][play.y];
 		var directions = rotate_orientations(piece[1],play.orientation);
 		this.board[play.x][play.y][1] = directions;	
 		this.pieces[play.x][play.y].directions = translate_orientations(directions);
-		console.log(directions.toString());
-		console.log(this.pieces[play.x][play.y].directions.toString());
+		// console.log(directions.toString());
+		// console.log(this.pieces[play.x][play.y].directions.toString());
 		}
 	else{//translation
 		var coord = end_position(play);
-		console.log('End position: ');
-		console.log(coord);
+		// console.log('End position: ');
+		// console.log(coord);
 		play.captured = this.board[coord.x][coord.y];
-		console.log(play.captured);
+		// console.log(play.captured);
 		this.board[coord.x][coord.y] = this.board[play.x][play.y];		
-		console.log(this.board[play.x][play.y]);
+		// console.log(this.board[play.x][play.y]);
 		this.board[play.x][play.y] = [empty,[]];
-		console.log(this.board[coord.x][coord.y]);
+		// console.log(this.board[coord.x][coord.y]);
 		this.pieces[coord.x][coord.y] = this.pieces[play.x][play.y];
 		this.pieces[play.x][play.y] = null;
 		
 	}
   this.stack.push(play);
-  console.log('After: ');
-	this.debug_board();
+  // console.log('After: ');
+	// this.debug_board();
   
 };
 

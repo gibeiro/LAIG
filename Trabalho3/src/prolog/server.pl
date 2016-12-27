@@ -156,7 +156,8 @@ set_board(New).
 parse_input(human_play(X,Y,Orientation,Length,Team), Res) :- 
 human_play(X,Y,Orientation,Length,Team,Res),
 orientation(Orientation,N),
-play_response([X,Y,Length,N],Res).
+play_response([X,Y,Length,N],Res),
+draw_gameboard.
 
 
 play_response(L,Res):-
