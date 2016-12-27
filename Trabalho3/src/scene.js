@@ -283,7 +283,7 @@ scene.prototype.logPicking = function ()
 					if(current_player)
 					current_player.picking_play();
 					console.log('Picked ' + customId);
-					// console.table(this.game.highlighted);
+					console.table(this.game.highlighted);
 					
 				}
 			}

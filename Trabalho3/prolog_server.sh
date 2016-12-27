@@ -1,0 +1,1 @@
+sicstus -f -i -l src/prolog/server.pl --goal server.
