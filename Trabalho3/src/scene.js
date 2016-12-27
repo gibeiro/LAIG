@@ -20,7 +20,7 @@ scene.prototype.constructor = scene;
  */
 scene.prototype.init = function (application) {
 	CGFscene.prototype.init.call(this, application);
-
+	
 	this.initCameras();
 
 	this.initLights();
@@ -33,8 +33,10 @@ scene.prototype.init = function (application) {
 	this.gl.depthFunc(this.gl.LEQUAL);
 
 	this.axis = new CGFaxis(this);
+	this.game = null;
 
 	this.enableTextures(true);
+	
 };
 
 
@@ -71,8 +73,8 @@ scene.prototype.setDefaultAppearance = function () {
  */
 
 // As loading is asynchronous, this may be called already after the application has started the run loop
-scene.prototype.onGraphLoaded = function () {
-
+scene.prototype.onGraphLoaded = function () {	
+	
 	for(var i = 0; i < this.graph.views.length; i++){
 		if(this.graph.views[i].id == this.graph.views.default){
 			this.camera = this.graph.views[i];
@@ -112,6 +114,8 @@ scene.prototype.onGraphLoaded = function () {
 	this.lights[i].update();
 
 	this.setUpdatePeriod(1);
+	
+	this.game = new game(this);
 };
 
 
@@ -144,7 +148,8 @@ scene.prototype.display = function () {
 		for(var i = 0; i < this.lights.length; i++)
 		this.lights[i].update();
 
-
+	this.game.display();
+	
 		//Starts going through the graph
 		this.runGraph(this.graph.rootNode);
 	};
@@ -260,4 +265,29 @@ scene.prototype.changeMaterials = function () {
  */
 scene.prototype.update = function(currTime){
 	this.currTime = currTime;
+	this.game.update();
 };
+
+scene.prototype.logPicking = function ()
+{
+	if (this.pickMode == false) {
+		if (this.pickResults != null && this.pickResults.length > 0) {
+			for (var i=0; i< this.pickResults.length; i++) {
+				var obj = this.pickResults[i][0];
+				if (obj)
+				{
+					var customId = this.pickResults[i][1];				
+					this.game.picked = customId;
+					this.game.calc_highlights();
+					var current_player = this.game.current_player();
+					if(current_player)
+					current_player.picking_play();
+					console.log('Picked ' + customId);
+					// console.table(this.game.highlighted);
+					
+				}
+			}
+			this.pickResults.splice(0,this.pickResults.length);
+		}		
+	}
+}

@@ -58,8 +58,8 @@ LightingScene.prototype.initCameras = function () {
 
 LightingScene.prototype.logPicking = function ()
 {
-	if (this.pickMode == false) {
-		if (this.pickResults != null && this.pickResults.length > 0) {
+	if (this.pickMode === false) {
+		if (this.pickResults !== null && this.pickResults.length > 0) {
 			for (var i=0; i< this.pickResults.length; i++) {
 				var obj = this.pickResults[i][0];
 				if (obj)
@@ -71,7 +71,7 @@ LightingScene.prototype.logPicking = function ()
 			this.pickResults.splice(0,this.pickResults.length);
 		}		
 	}
-}
+};
 
 
 LightingScene.prototype.display = function () 
@@ -114,4 +114,4 @@ LightingScene.prototype.display = function ()
 		this.popMatrix();
 	}
 	
-}
+};

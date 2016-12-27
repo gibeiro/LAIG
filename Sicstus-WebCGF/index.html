@@ -11,14 +11,15 @@
 			<input id="query_field" type="Text" value="handshake"/>
 			<br>
 			<button id="send_button" type="button" onClick="makeRequest();"> Send </button>
+			<button id="exit" type="button" onClick="getPrologRequest('quit');"> Exit </button>
 		</div>
 		<h3> Result: </h3>
 		<div id="query_result"></div>
-		
+		\
 		<script>
 			function getPrologRequest(requestString, onSuccess, onError, port)
 			{
-				var requestPort = port || 8081
+				var requestPort = port || 8080;
 				var request = new XMLHttpRequest();
 				request.open('GET', 'http://localhost:'+requestPort+'/'+requestString, true);
 

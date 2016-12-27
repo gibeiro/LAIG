@@ -21,7 +21,7 @@ piece.prototype.constructor = piece;
 
 piece.prototype.set_directions = function(directions){
   this.directions = directions;
-}
+};
 
 piece.prototype.set_color = function(rgba){
 	  // this.shader.setUniformsValues({rgba: rgba});
@@ -31,7 +31,7 @@ piece.prototype.set_color = function(rgba){
 	rgba[2],
 	rgba[3]
 	);
-}
+};
 
 piece.prototype.display = function(){
 
@@ -41,7 +41,7 @@ piece.prototype.display = function(){
   this.sphere.display();
 
   this.scene.pushMatrix();
-  this.scene.translate(0,.4,0);
+  this.scene.translate(0,0.4,0);
     this.sphere.display();
 
   this.scene.scale(1,0.4,1);
@@ -53,7 +53,7 @@ piece.prototype.display = function(){
 	var direction = this.directions[i];
 	if(direction < 0 || direction > 7)
 		  continue;
-	direction = (direction+2)%8;
+	direction = (2-direction)%8;
 	this.scene.pushMatrix();
 	this.scene.rotate(
 		direction*Math.PI/4+Math.PI,
@@ -71,4 +71,4 @@ piece.prototype.display = function(){
 
   // this.scene.setActiveShader(this.scene.defaultShader);
 
-}
+};

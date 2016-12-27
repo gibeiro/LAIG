@@ -1,6 +1,7 @@
 :-use_module(library(sockets)).
 :-use_module(library(lists)).
 :-use_module(library(codesio)).
+:-use_module(library(unix)).
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%                                        Server                                                   %%%%
@@ -30,6 +31,8 @@ server_loop(Socket) :-
 	socket_server_accept(Socket, _Client, Stream, [type(text)]),
 		% write('Accepted connection'), nl,
 	    % Parse Request
+		retractall(stream(_)),
+		assert(stream(Stream)),
 		catch((
 			read_request(Stream, Request),
 			read_header(Stream)
@@ -102,10 +105,108 @@ print_header_line(_).
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 % Require your Prolog Files here
+:- include('ploy.pl').
 
 parse_input(handshake, handshake).
 parse_input(test(C,N), Res) :- test(C,Res,N).
 parse_input(quit, goodbye).
+
+%start
+parse_input(start, Res) :- 
+initial_board(Board),
+set_board(Board),!,
+tell('.pipe'),
+format('var board = ~w;~n', [Board]),
+told,
+see('.pipe'),
+read_line(Codes),
+name(Res,Codes),
+flush_output,
+seen.
+
+%get_board
+parse_input(get_board, Res) :-
+board(Board),
+format(Res,'var board = ~s;',[Board]).
+
+%set_board
+parse_input(set_board(Board), Res) :-
+set_board(Board).
+
+set_board(Board):-
+retractall(board(_)),
+assert(board(Board)).
+parse_input(set_board(Board), Res) :-
+set_board(Board).
+
+%human play
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+human_play(X,Y,Orientation,Length,Team,Res):-
+board(Board),
+Xi is Y,
+Yi is X,
+getPiece(Xi,Yi,Board,Piece),
+assertTeam(Piece,Team),
+(
+(Length = 0) -> (rotatePiece(Piece,Orientation,PieceNova),setPiece(Xi,Yi,Board,New,PieceNova));
+(Length \= 0) -> (movePiece(Xi,Yi,Orientation,Length,Board,New,_))
+),!,
+set_board(New).
+
+parse_input(human_play(X,Y,Orientation,Length,Team), Res) :- 
+human_play(X,Y,Orientation,Length,Team,Res),
+orientation(Orientation,N),
+play_response([X,Y,Length,N],Res).
+
+
+play_response(L,Res):-
+tell('.pipe'),
+format('var play = { x:~w, y:~w, displacement:~w, orientation:~w };~n', L),
+told,
+see('.pipe'),
+read_line(Codes),
+name(Res,Codes),
+flush_output,
+seen.
+
+%parse_input(human_play(_,_,_,_,_), 'var play = null').
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+orientation(n,0).
+orientation(ne,1).
+orientation(e,2).
+orientation(se,3).
+orientation(s,4).
+orientation(sw,5).
+orientation(w,6).
+orientation(nw,7).
+orientation(X,X).
+
+%bot play
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+parse_input(bot_play(Team), Res) :- 
+board(Board),
+bot_plays_diff(1,Board,Team,NewBoard,X,Y,Length,Orientation),!,
+orientation(Orientation,N),
+set_board(NewBoard),
+Xi = Y, Yi =X,
+tell('.pipe'),
+format('var play = { x:~w, y:~w, displacement:~w, orientation:~w };~n', [Xi,Yi,Length,N]),
+told,
+see('.pipe'),
+read_line(Codes),
+name(Res,Codes),
+flush_output,
+seen.
+
+%game_is_over
+parse_input(is_game_over,Res):-
+board(Board),
+assertGameEnded(Board,Winner)
+-> Res = Winner; Res = false.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 test(_,[],N) :- N =< 0.
 test(A,[A|Bs],N) :- N1 is N-1, test(A,Bs,N1).

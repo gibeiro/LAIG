@@ -1,6 +1,6 @@
 <dsx>
 
-  <scene root="root" axis_length="3" />
+  <scene root="root" axis_length="0" />
 
   <views default="wew">
   </views>
@@ -52,7 +52,7 @@
       </materials>
       <texture id="none" />
       <children>
-        <primitiveref id="jogo"/>
+        <!--<primitiveref id="jogo"/>-->
       </children>
     </component>
 
