@@ -1,4 +1,4 @@
-function player(type,team,game){
+function player(type,team,game){	
 	this.type = type;
 	this.team = team;
 	this.play = null;
@@ -76,6 +76,8 @@ player.prototype.picking_play = function(){
 
 player.prototype.get_input = function(){
 	
+	// this.orbit_camera();
+	
 	//picking function will generate the play struct	
 	switch(this.type){
 		
@@ -144,4 +146,28 @@ player.prototype.make_play = function(){
 	
 	this.play = null;
 	
+};
+
+player.prototype.orbit_camera = function(){
+	
+	console.log('orbit_camera');
+		
+	var index = 0;
+	
+	if(this.team == 'green') index++;
+		
+	// var index = this.game.players.indexOf(this);
+	
+	console.log('index',index);
+	
+	var angle = (index+1)%2 * Math.PI;
+	if(this.type == 'bot')
+		angle = Math.PI*.5;
+	
+	console.log('current_angle'+this.game.camera.angle);
+	console.log('requested_angle'+angle);
+	
+	if(this.game.camera.angle == angle) {console.log('camera already in place\n');return;}
+	
+	this.game.animations.push(new camera_animation(this.game,angle));
 };

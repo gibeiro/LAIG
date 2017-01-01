@@ -11,6 +11,14 @@ function piece(scene){
   // );
 
   this.appearance =  new CGFappearance(scene);
+  this.appearance2 =  new CGFappearance(scene);
+  
+  this.appearance2.setEmission(
+	.5,
+	.5,
+	.5,
+	1
+	);
 
   // this.shader.setUniformsValues({uSampler2: 1});
   // this.shader.setUniformsValues({rgba: [0.6,0.6,0.6,0.6]});
@@ -39,7 +47,7 @@ piece.prototype.display = function(){
 
 	this.appearance.apply();
   this.sphere.display();
-
+  
   this.scene.pushMatrix();
   this.scene.translate(0,0.4,0);
     this.sphere.display();
@@ -49,6 +57,9 @@ piece.prototype.display = function(){
   this.cylinder.display();
   this.scene.popMatrix();
 
+  // this.appearance2.emission = this.appearance.emission - vec4.fromValues(.1,.1,.1,1); 
+  this.appearance2.apply();
+  
   for(var i = 0; i < this.directions.length; i++){
 	var direction = this.directions[i];
 	if(direction < 0 || direction > 7)

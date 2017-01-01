@@ -12,6 +12,14 @@ function scene() {
 scene.prototype = Object.create(CGFscene.prototype);
 scene.prototype.constructor = scene;
 
+scene.prototype.set_graph = function(filename){
+	obj = new graph(filename,this);
+	
+	// this.init();
+	if(obj != null)
+	this.graph = obj;
+}
+
 
 /**
  * Initiates scene before loading .dsx
@@ -33,9 +41,11 @@ scene.prototype.init = function (application) {
 	this.gl.depthFunc(this.gl.LEQUAL);
 
 	this.axis = new CGFaxis(this);
-	this.game = null;
+	// this.game = null;
 
 	this.enableTextures(true);
+	
+	this.game = null;
 	
 };
 
@@ -115,6 +125,7 @@ scene.prototype.onGraphLoaded = function () {
 
 	this.setUpdatePeriod(1);
 	
+	if(!this.game)
 	this.game = new game(this);
 };
 
@@ -152,7 +163,7 @@ scene.prototype.display = function () {
 	
 		//Starts going through the graph
 		this.runGraph(this.graph.rootNode);
-	};
+	}
 };
 
 
@@ -179,7 +190,7 @@ scene.prototype.runGraph = function (node) {
 	this.multMatrix(node.mat);
 
 	//Draws primitive (if it has one)
-	if (node.primitive != null)
+	if (node.primitive !== null)
 	node.primitive.display();
 
 	//Uses DFS
@@ -224,7 +235,7 @@ scene.prototype.copyLight = function (sceneLight, newLight) {
 	}
 
 	sceneLight.setVisible(true);
-}
+};
 
 
 /**
@@ -239,7 +250,7 @@ scene.prototype.changeCamera = function () {
 
 	this.camera = this.graph.perspCams[cameraIndex];
 	x = 1;
-}
+};
 
 
 /**
@@ -247,14 +258,14 @@ scene.prototype.changeCamera = function () {
  */
 scene.prototype.resetCamera = function () {
 	this.camera = freeCam;
-}
+};
 
 /**
  * Increments every list of materials on the scene's graph
  */
 scene.prototype.changeMaterials = function () {
 	this.graph.changeNodesMaterialIndex(this.graph.rootNode);
-}
+};
 
 
 /**
@@ -265,13 +276,13 @@ scene.prototype.changeMaterials = function () {
  */
 scene.prototype.update = function(currTime){
 	this.currTime = currTime;
-	this.game.update();
+	this.game.update(currTime);
 };
 
 scene.prototype.logPicking = function ()
 {
-	if (this.pickMode == false) {
-		if (this.pickResults != null && this.pickResults.length > 0) {
+	if (this.pickMode === false) {
+		if (this.pickResults !== null && this.pickResults.length > 0) {
 			for (var i=0; i< this.pickResults.length; i++) {
 				var obj = this.pickResults[i][0];
 				if (obj)
@@ -290,4 +301,4 @@ scene.prototype.logPicking = function ()
 			this.pickResults.splice(0,this.pickResults.length);
 		}		
 	}
-}
+};

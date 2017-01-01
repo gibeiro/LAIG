@@ -184,11 +184,29 @@ orientation(w,6).
 orientation(nw,7).
 orientation(X,X).
 
+%set difficulty
+:- dynamic difficulty/1.
+difficulty(1).
+parse_input(set_difficulty(N),Res):-
+set_difficulty(N).
+
+set_difficulty(N):-
+retractall(difficulty(_)),
+assert(difficulty(N)).
+
+set_board(Board):-
+retractall(board(_)),
+assert(board(Board)).
+parse_input(set_board(Board), Res) :-
+set_board(Board).
+
+
 %bot play
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 parse_input(bot_play(Team), Res) :- 
 board(Board),
-bot_plays_diff(1,Board,Team,NewBoard,X,Y,Length,Orientation),!,
+difficulty(D),
+bot_plays_diff(D,Board,Team,NewBoard,X,Y,Length,Orientation),!,
 orientation(Orientation,N),
 set_board(NewBoard),
 Xi = Y, Yi =X,

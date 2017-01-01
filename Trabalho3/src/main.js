@@ -26,6 +26,8 @@ serialInclude([
   'src/primitives/rectangle.js',
   'src/primitives/piece.js',
   'src/animations.js',
+  'src/piece_animation.js',
+  'src/camera_animation.js',
   'src/interface.js',
   'src/scene.js',
   'src/graph.js',

@@ -1,4 +1,16 @@
 function game(scene){
+	this.camera = new CGFcamera(
+	.5,
+	.1,
+	500,
+	vec3.fromValues(0,30,40),
+	vec3.fromValues(0,0,0)
+	);
+	this.camera.angle = Math.PI*.5;
+	// this.cameras.current = 2;	
+	this._replay = false;
+	this.time = 0;
+	this.animations = [];
 	this.colors = [];
 	this.picked = 0;
 	this.highlighted = [];
@@ -13,11 +25,14 @@ function game(scene){
 		for(var j = 0; j < 9; j++)
 			this.objects[i].push(new CGFplane(scene));
 	}
-  this.scene = scene;
+  this.scene = scene;  
+	this.scene.camera = this.camera;
   scene.setPickEnabled(true);
   this.stack = [];
   this.state = 0;
   this.board = [];
+  this.tray1 = [];
+  this.tray2 = [];
   this.chessboard = new chessboard(
     scene,
     9,
@@ -55,18 +70,28 @@ function game(scene){
 }
 game.prototype.constructor = game;
 
+game.prototype.current_camera = function(){
+	return this.cameras[this.cameras.current];
+};
 game.prototype.update = function(time){	
 	
-	// console.log(this.state);
+	// console.log(this.state, this);
 	// console.log(this);
+	// console.log(this.animations);
 	// console.log(waiting_response);
 	// console.log(request_response);	
 	// console.log('\n');
 	
+	this.time = time;
+	for(var i = 0; i < this.animations.length; i++)
+		if(this.animations[i].update(time))
+			this.animations.splice(i,1);
+
 	switch(this.state){
 		
 		case 0: //waiting for player to be set
-		if(this.players_are_set())
+		this.orbit_camera();
+		if(this.players_are_set() && this.stack.length == 0)
 			this.state = 1;
 		break;
 		
@@ -76,11 +101,13 @@ game.prototype.update = function(time){
 			waiting_response = true;
 			this.state = 5;			
 		}
-		else
-			this.state = 2;
+		else{
+		this.state = 2;
+		}
 		break;
 		
 		case 2: //waiting for player input
+		this.current_player().orbit_camera();
 		if(this.current_player().get_input())
 			this.state = 3;
 		break;
@@ -96,7 +123,7 @@ game.prototype.update = function(time){
 		case 4: //sending game state request
 		if(!waiting_response){
 			get_request('is_game_over');
-			waiting_response = true;
+			waiting_response = true;			
 			this.state = 7;
 		}
 		break;
@@ -107,21 +134,16 @@ game.prototype.update = function(time){
 			request_response = null;
 			this.board = board;
 			this.read_pieces();
-			this.state = 2;			
+			this.state = 2;				
 		}
 		break;
 		
 		case 6: //waiting for play response
 		if(!waiting_response){
-			if(request_response == 'Bad Request'){
-				this.state = 2;
-				request_response = null;
-				break;
-			}
 			eval(request_response);
-			request_response = null;
+			request_response = null;			
 			this.play(play);
-			this.highlighted = [];
+			this.highlighted = [];			
 			this.picked = 0;
 			this.state = 4;
 		}			
@@ -133,21 +155,89 @@ game.prototype.update = function(time){
 			request_response = null;
 			if(bool){//over
 			console.log('Team ' + bool + ' won the game!');
-			this.players = [];
+			// this.players = [];
 			this.state = 0;
 			}
-			else{//not over
-			this.next_player();
-			this.state = 2;
+			else{//not over	
+			this.next_player();			
+			this.state = 8;
 			}
 		}	
+		break;
+		
+		case 8: //waiting for animations to finish
+		if(!this.animations.length){
+			this.state = 2;
+		}
+		break;
+		
+		case 9://undo -> sending board
+		if(!waiting_response){
+			request_response = null;
+			this.state = 2;
+		}
+		break;
+		
+		case 10://replay				
+		var play = this.stack.shift();	
+		if(!play){
+			this.state = 0;
+			this._replay = false;
+			this.players = [];
+		}
+		else{
+			play.captured = null;
+			this.play(play);
+			this.next_player();			
+			this.state = 12;
+		}		
+		break;
+		
+		case 11://waiting for initial board to replay game
+		if(!waiting_response){
+			eval(request_response);
+			this.board = board;
+			this.read_pieces();
+			request_response= null;
+			this.state = 10;
+		}
+		break;
+		
+		case 12://wait for replay animations
+		if(!this.animations.length)
+			this.state = 10;
+		break;
+		
+		case 13://wait for difficulty setting
+		if(!waiting_response){
+			this.state = this.hold_state;
+			request_response = null;
+		}
 		break;
 	}
 	
 	
 };
 
+game.prototype.start_replay = function(){
+	// console.log(this.stack);
+	waiting_response = true;
+	this.state = 11;
+	this._replay = true;
+	this.animations = [];
+	this.highlighted = [];
+	this.pieces = [];
+	this.tray1 = [];
+	this.tray2 = [];
+	this.picked = 0;
+	this.players.current = 0;
+	this.orbit_camera();
+	get_request('start');
+};
+
 game.prototype.read_pieces = function(){
+
+	this.pieces = [];
 
 	for(var i = 0; i < this.board.length; i++){
 		var line = [];
@@ -166,11 +256,22 @@ game.prototype.read_pieces = function(){
 
 };
 
+game.prototype.set_difficulty = function(difficulty){
+
+	waiting_response = true;
+	get_request('set_difficulty(' + difficulty +')');
+	this.hold_state = this.state;
+	this.state = 13;
+	
+};
+
 game.prototype.set_players = function(type1,type2){	
 	this.board = [];
 	this.pieces = [];
 	this.stack = [];
 	this.players = [];
+	this.tray1 = [];
+	this.tray2 = [];
 	this.players.push(new player(type1,'red',this));
 	this.players.push(new player(type2,'green',this));
 	this.players.current = 0;
@@ -179,7 +280,8 @@ game.prototype.set_players = function(type1,type2){
 
 game.prototype.next_player = function(){	
 	this.players.current++;
-	this.players.current %= this.players.length;
+	this.players.current %= 2;		
+	
 	return this.players[this.players.current];
 };
 
@@ -190,21 +292,89 @@ game.prototype.current_player = function(){
 
 
 game.prototype.undo = function(){
-  var play = this.stack.pop();
+	
+	if(this.stack.length < 2) return;
+	
+  var play1 = this.stack.pop();
+  var play2 = this.stack.pop();
+  this.animations = [];
   
-  var coord = end_position(play);
-  this.board[play.y][play.x] = this.board[coord[0]][coord[1]];
-  this.board[coord[0]][coord[1]] = play.captured;
+  var coord = end_position(play1);
+  this.board[play1.x][play1.y] = this.board[coord.x][coord.y];
+  this.board[coord.x][coord.y] = play1.captured;
   
-  console.log(this.board.toString());
+  var piece = null;
   
-  get_request(this.board.toString());
+  switch(play1.captured[0]){
+	  case 'red':
+	  piece = this.tray2.pop();
+	  break;
+	   case 'green':
+	   piece = this.tray1.pop();
+	  break;
+  }
+  
+	this.pieces[play1.x][play1.y] = this.pieces[coord.x][coord.y];  
+	this.pieces[coord.x][coord.y] = piece;
+	
+	coord = end_position(play2);
+  this.board[play2.x][play2.y] = this.board[coord.x][coord.y];
+  this.board[coord.x][coord.y] = play2.captured;
+  
+  piece = null;
+  
+  switch(play2.captured[0]){
+	  case 'red':
+	  piece = this.tray2.pop();
+	  break;
+	   case 'green':
+	   piece = this.tray1.pop();
+	  break;
+  }
+  
+	this.pieces[play2.x][play2.y] = this.pieces[coord.x][coord.y];  
+	this.pieces[coord.x][coord.y] = piece;
+  
+  get_request('set_board('+board_to_string(this.board)+')');
   waiting_request = true;
   
-  this.state = 8;
+  this.state = 9;
   
 };
 
+function board_to_string(board){
+	var string = '[';
+	
+	for(var i = 0; i < board.length; i++){
+		string += '[';
+		
+		for(var j = 0; j < board[i].length; j++){
+			string += '[\'';
+			string += board[i][j][0];
+			string += '\',[';
+			
+			for(var k = 0; k < board[i][j][1].length;k++){
+				string += '\'';
+				string += board[i][j][1][k];
+				string += '\'';
+				
+				if(k != board[i][j][1].length-1)
+					string += ',';
+			}
+			string += ']]';
+			
+			if(j != board[i].length - 1)
+				string += ',';
+		}
+		
+		string += ']';
+		
+		if(i != board.length -1)
+			string += ',';
+	}
+	
+	return string + ']';	
+}
 
 function end_position(play){
 	
@@ -252,11 +422,23 @@ function rotate_orientations(orientations,angle){
 	
 }
 
+game.prototype.orbit_camera = function(){
+	// console.log('orbit_camera_game');
+	// console.log('current_angle'+this.camera.angle);
+	// console.log('requested_angle'+Math.PI*.5);
+	
+	if(this.camera.angle == Math.PI*.5) {return;}
+	this.animations.push(new camera_animation(this,Math.PI*.5));
+	
+};
+
 game.prototype.calc_highlights = function(){
 
 	this.highlighted = [];
 	
 	if(this.picked === 0) return;
+	
+	if(this.state != 2) return;
 	
 	var coord = picking_id_to_coord(this.picked);
 	this.highlighted.push(coord);		
@@ -310,37 +492,57 @@ game.prototype.calc_highlights = function(){
 
 game.prototype.play = function(play){
 	
+	// var index =	this.animations.push(new piece_animation(play)) - 1;
+	
 	// console.log('Adding play: ');
 	// console.log(play);
 	// console.log('Before: ');
 	// this.debug_board();
+	// var tmp_pieces = this.pieces.slice();
 	if(play.displacement === 0){//rotation
 		play.captured = null;
 		var piece = this.board[play.x][play.y];
 		var directions = rotate_orientations(piece[1],play.orientation);
 		this.board[play.x][play.y][1] = directions;	
-		this.pieces[play.x][play.y].directions = translate_orientations(directions);
+		// tmp_pieces[play.x][play.y].directions = translate_orientations(directions);
 		// console.log(directions.toString());
 		// console.log(this.pieces[play.x][play.y].directions.toString());
-		}
+	}
 	else{//translation
 		var coord = end_position(play);
 		// console.log('End position: ');
 		// console.log(coord);
-		play.captured = this.board[coord.x][coord.y];
+		play.captured = this.board[coord.x][coord.y].slice();
 		// console.log(play.captured);
 		this.board[coord.x][coord.y] = this.board[play.x][play.y];		
 		// console.log(this.board[play.x][play.y]);
 		this.board[play.x][play.y] = [empty,[]];
 		// console.log(this.board[coord.x][coord.y]);
-		this.pieces[coord.x][coord.y] = this.pieces[play.x][play.y];
-		this.pieces[play.x][play.y] = null;
+		// tmp_pieces[coord.x][coord.y] = this.pieces[play.x][play.y];
+		// tmp_pieces[play.x][play.y] = null;
 		
 	}
-  this.stack.push(play);
+	
+	console.log('new play: ', play);
+	
+	this.calc_animations(play);
+	if(!this._replay)
+	this.stack.push(play);
   // console.log('After: ');
 	// this.debug_board();
   
+};
+
+game.prototype.calc_animations = function(play){
+	
+	if(play.displacement){
+		this.animations.push(new piece_translate(this,play));
+		if(play.captured[0] != 'empty')
+		this.animations.push(new piece_captured(this,play));
+	}
+	else this.animations.push(new piece_rotate(this,play));
+	
+	
 };
 
 game.prototype.is_game_over_handler = function(){
@@ -424,6 +626,9 @@ game.prototype.display_board = function(){
 			this.scene.translate(i-4,0,4-j);					
 			var picking_id = 1+9*i+j;
 			var color = this.tile_colors[picking_id%2];
+			var player = this.current_player();
+			if(player)
+				if(player.type == 'human')
 			for(var k = 0; k < highlighted.length; k++)
 				if(highlighted[k][0] == i && highlighted[k][1] == j){
 					color = this.tile_colors[picking_id%2+2];
@@ -451,20 +656,23 @@ game.prototype.display_chessboard = function(){
 game.prototype.display_pieces = function(){
 	
 	for(var i = 0; i < this.pieces.length; i++){
-		for(var j = 0; j < this.pieces[i].length; j++){
-		  if(!this.pieces[i][j]) continue;		
-		  this.scene.pushMatrix();
-		  this.scene.translate(i-4,0,4-j);
-		  this.scene.scale(0.4,0.4,0.4);
-		  var picking_id = 9*i+j+1;
-		  var color_name = this.board[i][j][0];		  
-		  if(
-		  this.picked == picking_id &&
-		  this.current_player().team == color_name
-		  )	color_name += '_highlighted';
-		  var color = this.colors[color_name];
-		  this.pieces[i][j].set_color(color);
-		  this.scene.registerForPick(picking_id, this.pieces[i][j]);
+		for(var j = 0; j < this.pieces[i].length; j++){			
+		  if(!this.pieces[i][j]) continue;	
+			// console.log(this.pieces[i][j]);
+		  this.scene.pushMatrix();	
+			this.scene.translate(i-4,0,4-j);		  	   
+		  if(this.pieces[i][j] instanceof piece){
+			  var picking_id = 9*i+j+1;	
+			  this.scene.scale(0.4,0.4,0.4);			  
+			  var color_name = this.board[i][j][0];	
+			  if(
+			  this.picked == picking_id &&
+			  this.current_player().team == color_name
+			  )color_name += '_highlighted';
+			  var color = this.colors[color_name].slice();
+			  this.pieces[i][j].set_color(color);  
+			this.scene.registerForPick(picking_id, this.pieces[i][j]);		 
+		  }
 		  this.pieces[i][j].display();
 		  this.scene.popMatrix();
 
@@ -472,15 +680,40 @@ game.prototype.display_pieces = function(){
 	}
 };
 
+game.prototype.display_tray = function(){
+
+	
+	for(var i = 0; i < this.tray1.length; i++){
+		this.scene.pushMatrix();
+	this.scene.translate(4,0,-5);
+		this.scene.translate(-Math.floor(i%4),.3*Math.floor(i/4),0);
+		this.scene.scale(.4,.4,.4);
+		this.tray1[i].display();
+		this.scene.popMatrix();
+	}
+	
+	
+	
+	for(var i = 0; i < this.tray2.length; i++){
+		this.scene.pushMatrix();
+	this.scene.translate(-4,0,-5);
+		this.scene.translate(Math.floor(i%4),.3*Math.floor(i/4),0);
+		this.scene.scale(.4,.4,.4);
+		this.tray2[i].display();
+		this.scene.popMatrix();	
+	}
+	
+
+};
+
 game.prototype.display = function(){
 
 // console.log(this.highlighted);
-
 	this.scene.logPicking();
-	this.scene.clearPickRegistration();
-
-  this.display_board();
-  this.display_pieces();
+	this.scene.clearPickRegistration();	
+	this.display_board();
+	this.display_pieces();
+	this.display_tray();
 };
    
   

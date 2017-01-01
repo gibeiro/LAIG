@@ -26,10 +26,32 @@ interface.prototype.init = function (application) {
 	f1.add(this,'start_game_pvb').name('Player vs AI');
 	f1.add(this,'start_game_bvb').name('AI vs AI');
 	
+	var f2 = this.gui.addFolder('Set Difficulty');
+	f2.add(this,'set_difficulty_random').name('Random');
+	f2.add(this,'set_difficulty_greedy').name('Greedy');
+	
+	var f3 = this.gui.addFolder('Set Scene');
+	f3.add(this,'set_scene_none').name('None');
+	f3.add(this,'set_scene_beach').name('Beach');
+	// f2.add(this,'set_difficulty_greedy').name('Greedy');
+	
 	this.gui.add(this,'undo').name('Undo (CTRL-Z)');
+	this.gui.add(this,'replay').name('Replay Game');
 	
 	return true;
 }
+
+interface.prototype.set_scene_beach = function(){ 
+var filename = getUrlVars()['file'] || "../res/dsx/beach.dsx";
+this.scene.set_graph(filename);
+};
+
+interface.prototype.set_scene_none = function(){ 
+var filename = getUrlVars()['file'] || "../res/dsx/test.dsx";
+this.scene.set_graph(filename);
+};
+
+interface.prototype.replay = function(){ this.scene.game.start_replay();}
 
 interface.prototype.undo = function(){ this.scene.game.undo();}
 
@@ -41,6 +63,14 @@ interface.prototype.start_game_pvb = function(){
 }
 interface.prototype.start_game_bvb = function(){
 	this.scene.game.set_players('bot','bot');
+}
+
+interface.prototype.set_difficulty_random = function(){
+	this.scene.game.set_difficulty(0);
+}
+
+interface.prototype.set_difficulty_greedy = function(){
+	this.scene.game.set_difficulty(1);
 }
 
 

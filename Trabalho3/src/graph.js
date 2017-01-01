@@ -44,7 +44,7 @@ graph.prototype.validateOrder = function (rootElement) {
 	var nodes = rootElement.childNodes;
 	var types = [];
 	var names = ['scene', 'views', 'illumination', 'lights', 'textures',
-	'materials', 'transformations', 'primitives', 'components', 'animations'];
+	'materials', 'transformations', 'primitives', 'components'];
 
 	for (var i = 0; i < nodes.length; i++) {
 		if (nodes[i].nodeType == 1) {
